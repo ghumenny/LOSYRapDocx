@@ -1,37 +1,34 @@
-#' @title Przygotowanie danych meta dla wykresów i tabel dotyczących typów szkół
+#' @title Przygotowanie danych do tabeli (typy szkół ogółem)
 #' @description Funkcja filtruje i przetwarza dane z pełnej ramki wskaźników,
-#'   aby przygotować je do generowania wykresów i tabel w raportach Word.
-#'   Filtruje dane dla całej Polski, dla wskaźnika 'typ_szk2' i roku absolwentów
-#'   o 2 lata wcześniejszego niż główna edycja.
-#'   Przekształca dane z formatu szerokiego na długi i oblicza procenty oraz liczebności
+#'   aby przygotować je do generowania tabel. Filtruje dane dla całej Polski, dla wskaźnika
+#'   'typ_szk2'. Przekształca dane i oblicza procenty oraz liczebności
 #'   w formacie zgodnym z raportowaniem.
 #' @param pelna_finalna_ramka_wskaznikow Ramka danych zawierająca pełne wyniki wskaźników.
 #'   Oczekuje, że kolumna 'wynik' zawiera zagnieżdżone ramki danych.
-#' @param glowna_edycja Liczba całkowita reprezentująca główną edycję (rok) raportu.
+#' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
 #' @return Ramka danych typu tibble w finalnym formacie do zasilania wykresów i tabel.
-#' @importFrom dplyr filter pull bind_rows select mutate rename arrange
+#' @importFrom dplyr %>% filter pull bind_rows select mutate summarise arrange
 #' @importFrom rlang .data
+#' @importFrom tibble tibble
 #' @export
-dane_tab_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, glowna_edycja) {
+dane_tab_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, rok_absolwentow) {
 
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "typ_szk2",
-      .data$rok_abs == (glowna_edycja - 2)
+      .data$rok_abs == rok_absolwentow
     ) %>%
     pull(.data$wynik) %>%
     # Wynik jest listą ramek danych, więc bierzemy pierwszy element
     # Zakładamy, że jest tylko jeden wiersz spełniający kryteria
     `[[`(1)
 
-  # Sprawdzenie, czy dane wejściowe są puste
-  if (is.null(dane_wejsciowe) || nrow(dane_wejsciowe) == 0) {
+  if (is.null(dane_wejsciowe) ||
+      colnames(dane_wejsciowe)[1] %in% "Uwaga") {
     message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
     return(tibble(
-      `Typ szkoły` = character(),
-      liczba = numeric(),
-      procent = numeric()
+      Uwaga = "Brak danych wejściowych dla podanych kryteriów."
     ))
   }
 
@@ -42,7 +39,8 @@ dane_tab_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, glowna_edycja
 
   # Agregacja dla "Branżowa szkoła I stopnia - ogółem"
   branzowa_ogolem <- dane_wejsciowe %>%
-    filter(.data$typ_szk2 %in% c("Młodociani w Branżowej szkole I stopnia", "Niemłodociani w Branżowej szkole I stopnia")) %>%
+    filter(.data$typ_szk2 %in% c("Młodociani w Branżowej szkole I stopnia",
+                                 "Niemłodociani w Branżowej szkole I stopnia")) %>%
     summarise(
       typ_szk2 = "Branżowa szkoła I stopnia - ogółem",
       n_SUMA = sum(.data$n_SUMA),
@@ -73,7 +71,7 @@ dane_tab_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, glowna_edycja
   return(finalna_tabela)
 }
 
-#' @title Przygotowanie danych do wykresów
+#' @title Przygotowanie danych do wykresu typów szkół (ogółem)
 #' @description Funkcja filtruje i przetwarza dane z pełnej ramki wskaźników,
 #'   aby przygotować je do generowania wykresów. Tworzy ramkę danych
 #'   z kolumnami `rok_abs`, `typ_szk` oraz `pct` (jako odsetek).
@@ -81,8 +79,9 @@ dane_tab_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, glowna_edycja
 #'   Oczekuje, że kolumna 'wynik' zawiera zagnieżdżone ramki danych.
 #' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
 #' @return Ramka danych typu tibble w finalnym formacie do zasilania wykresów.
-#' @importFrom dplyr filter pull select mutate bind_rows summarise
+#' @importFrom dplyr %>% filter pull select mutate bind_rows summarise
 #' @importFrom rlang .data
+#' @importFrom tibble tibble
 #' @export
 dane_wyk_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, rok_absolwentow) {
 
@@ -90,29 +89,23 @@ dane_wyk_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, rok_absolwent
   # WOJ_NAZWA = "Polska"
   # wskaznik = "typ_szk2"
   # rok_abs = podany parametr funkcji
-  dane_wejsciowe_nested <- pelna_finalna_ramka_wskaznikow %>%
+  dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "typ_szk2",
-      .data$rok_abs == rok_absolwentow
+      .data$rok_abs == {{rok_absolwentow}}
     ) %>%
     pull(.data$wynik) %>% `[[`(1)
 
-  # Sprawdzenie, czy dane wejściowe nie są puste
-  if (length(dane_wejsciowe_nested) == 0 || is.null(dane_wejsciowe_nested[[1]]) || nrow(dane_wejsciowe_nested[[1]]) == 0) {
+  if (is.null(dane_wejsciowe) ||
+      colnames(dane_wejsciowe)[1] %in% "Uwaga") {
     message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
     return(tibble(
-      rok_abs = numeric(),
-      typ_szk = character(),
-      pct = numeric()
+      Uwaga = "Brak danych wejściowych dla podanych kryteriów."
     ))
   }
 
-  # Wyciągnięcie właściwej ramki danych z listy
-  dane_wejsciowe <- dane_wejsciowe_nested[[1]]
 
-  # 2. Agregacja dla "Branżowa szkoła I stopnia"
-  # Sumujemy dane dla Młodociani i Niemłodociani
   branzowa_ogolem <- dane_wejsciowe %>%
     filter(.data$typ_szk2 %in% c("Młodociani w Branżowej szkole I stopnia", "Niemłodociani w Branżowej szkole I stopnia")) %>%
     summarise(
@@ -150,42 +143,37 @@ dane_wyk_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, rok_absolwent
   return(dane_wyjsciowe)
 }
 
-#' @title Przygotowanie danych meta dla wykresów i tabel dotyczących typów szkół
+#' @title Przygotowanie danych do tabeli (typy szkół i płeć)
 #' @description Funkcja filtruje i przetwarza dane z pełnej ramki wskaźników,
-#'   aby przygotować je do generowania wykresów i tabel w raportach Word.
-#'   Filtruje dane dla całej Polski, dla wskaźnika 'typ_szk2' i roku absolwentów
-#'   o 2 lata wcześniejszego niż główna edycja.
-#'   Przekształca dane z formatu szerokiego na długi i oblicza procenty oraz liczebności
-#'   w formacie zgodnym z raportowaniem.
+#'   aby przygotować je do generowania tabel. Filtruje dane dla całej Polski,
+#'   dla wskaźnika 'typ_szk2'. Oblicza liczebności i procenty w formacie
+#'   zgodnym z raportowaniem.
 #' @param pelna_finalna_ramka_wskaznikow Ramka danych zawierająca pełne wyniki wskaźników.
 #'   Oczekuje, że kolumna 'wynik' zawiera zagnieżdżone ramki danych.
-#' @param glowna_edycja Liczba całkowita reprezentująca główną edycję (rok) raportu.
+#' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
 #' @return Ramka danych typu tibble w finalnym formacie do zasilania wykresów i tabel.
-#' @importFrom dplyr filter pull bind_rows select mutate arrange
+#' @importFrom dplyr %>% filter pull bind_rows select mutate summarise arrange
 #' @importFrom rlang .data
+#' @importFrom tibble tibble
 #' @export
-dane_tab_meta_typsz_plec <- function(pelna_finalna_ramka_wskaznikow, glowna_edycja) {
+dane_tab_meta_typsz_plec <- function(pelna_finalna_ramka_wskaznikow, rok_absolwentow) {
 
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "typ_szk2",
-      .data$rok_abs == (glowna_edycja - 2)
+      .data$rok_abs == rok_absolwentow
     ) %>%
     pull(.data$wynik) %>%
     # Wynik jest listą ramek danych, więc bierzemy pierwszy element
     # Zakładamy, że jest tylko jeden wiersz spełniający kryteria
     `[[`(1)
 
-  # Sprawdzenie, czy dane wejściowe są puste
-  if (is.null(dane_wejsciowe) || nrow(dane_wejsciowe) == 0) {
+  if (is.null(dane_wejsciowe) ||
+      colnames(dane_wejsciowe)[1] %in% "Uwaga") {
     message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
     return(tibble(
-      `Typ szkoły` = character(),
-      liczba_Meżczyzna = numeric(),
-      liczba_Kobieta = numeric(),
-      procent_Mężczyzna = numeric(),,
-      procent_Kobieta = numeric()
+      Uwaga = "Brak danych wejściowych dla podanych kryteriów."
     ))
   }
 
@@ -232,16 +220,18 @@ dane_tab_meta_typsz_plec <- function(pelna_finalna_ramka_wskaznikow, glowna_edyc
 }
 
 
-#' @title Przygotowanie danych do wykresów
+#' @title Przygotowanie danych do wykresu typów szkół (płeć)
 #' @description Funkcja filtruje i przetwarza dane z pełnej ramki wskaźników,
 #'   aby przygotować je do generowania wykresów. Tworzy ramkę danych
-#'   z kolumnami `rok_abs`, `typ_szk` oraz `pct` (jako odsetek).
+#'   z kolumnami `rok_abs`, `typ_szk`, `plec` oraz `pct` (jako odsetek).
 #' @param pelna_finalna_ramka_wskaznikow Ramka danych zawierająca pełne wyniki wskaźników.
 #'   Oczekuje, że kolumna 'wynik' zawiera zagnieżdżone ramki danych.
 #' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
 #' @return Ramka danych typu tibble w finalnym formacie do zasilania wykresów.
-#' @importFrom dplyr filter pull select mutate bind_rows summarise
+#' @importFrom dplyr %>% filter pull select mutate bind_rows summarise starts_with if_else
 #' @importFrom rlang .data
+#' @importFrom tidyr pivot_longer
+#' @importFrom tibble tibble
 #' @export
 dane_wyk_meta_typsz_plec <- function(pelna_finalna_ramka_wskaznikow, rok_absolwentow) {
 
@@ -257,13 +247,11 @@ dane_wyk_meta_typsz_plec <- function(pelna_finalna_ramka_wskaznikow, rok_absolwe
     ) %>%
     pull(.data$wynik) %>% `[[`(1)
 
-  # Sprawdzenie, czy dane wejściowe są puste
-  if (is.null(dane_wejsciowe) || nrow(dane_wejsciowe) == 0) {
+  if (is.null(dane_wejsciowe) ||
+      colnames(dane_wejsciowe)[1] %in% "Uwaga") {
     message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
     return(tibble(
-      `Typ szkoły` = character(),
-      procent_Mężczyzna = numeric(),,
-      procent_Kobieta = numeric()
+      Uwaga = "Brak danych wejściowych dla podanych kryteriów."
     ))
   }
 
@@ -298,9 +286,41 @@ dane_wyk_meta_typsz_plec <- function(pelna_finalna_ramka_wskaznikow, rok_absolwe
     pivot_longer(!typ_szk, names_to = "plec", values_to = "pct",
                  names_prefix = "pct_") %>%
     mutate(pct = .data$pct / 100,
-           plec = if_else(plec == "Mężczyzna", "Mężczyźni", "Kobiety")# Konwersja procentu na odsetek
+           plec = if_else(plec == "Mężczyzna", "Mężczyźni", "Kobiety")
     )
 
 
   return(dane_wyjsciowe)
+}
+
+#' @title Przygotowanie danych do wykresu zawodów
+#' @description Funkcja filtruje dane z pełnej ramki wskaźników,
+#'   aby przygotować je do generowania wykresów. Zwraca surową ramkę danych
+#'   z zagnieżdżonego obiektu.
+#' @param pelna_finalna_ramka_wskaznikow Ramka danych zawierająca pełne wyniki wskaźników.
+#'   Oczekuje, że kolumna 'wynik' zawiera zagnieżdżone ramki danych.
+#' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
+#' @return Ramka danych typu tibble w finalnym formacie do zasilania wykresów.
+#' @importFrom dplyr %>% filter pull
+#' @importFrom rlang .data
+#' @importFrom tibble tibble
+#' @export
+dane_wyk_meta_typsz_zaw <- function(pelna_finalna_ramka_wskaznikow, rok_absolwentow) {
+
+  dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
+    filter(
+      .data$WOJ_NAZWA == "Polska",
+      .data$wskaznik == "meta_zaw",
+      .data$rok_abs == rok_absolwentow
+    ) %>%
+    pull(.data$wynik) %>% `[[`(1)
+  # Sprawdzenie, czy dane wejściowe nie są puste
+  if (is.null(dane_wejsciowe) || nrow(dane_wejsciowe)[1] == 0) {
+    message("Brak danych do wygenerowania tabeli. Zwracam pusty obiekt flextable.")
+    return(tibble(
+      Uwaga = "Brak danych wejściowych dla podanych kryteriów."
+    ))
+  }
+
+  return(dane_wejsciowe)
 }
