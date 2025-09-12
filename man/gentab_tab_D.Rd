@@ -2,7 +2,7 @@
 % Please edit documentation in R/przygotowanie_tabel_D2.R
 \name{gentab_tab_D}
 \alias{gentab_tab_D}
-\title{Generowanie tabeli z danymi z rozdziału D w formacie flextable}
+\title{Generowanie tabeli z danymi z rozdziałów D i K1 w formacie flextable}
 \usage{
 gentab_tab_D(dane_do_tabeli, edycja)
 }
