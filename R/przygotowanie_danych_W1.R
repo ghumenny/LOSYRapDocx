@@ -19,12 +19,13 @@
 dane_tab_W1 <- function(pelna_finalna_ramka_wskaznikow,
                              typ_szk, kryterium, rok_absolwentow, rok) {
 
+  rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "W1",
       .data$kryterium == {{kryterium}},
-      .data$rok == rok,
+      .data$rok == rok_kal,
       .data$typ_szk2 == {{typ_szk}},
       .data$rok_abs == rok_absolwentow
     ) %>%

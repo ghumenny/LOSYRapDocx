@@ -1,0 +1,110 @@
+
+
+<br>
+<br>
+<br>
+
+
+
+```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},W1setup', echo=FALSE, warning=FALSE, message=FALSE}
+
+knitr::opts_chunk$set(
+  echo=FALSE, warning=FALSE, message=FALSE, results='asis', fig.width = 10, fig.height = 15, fig.path = "figPOL/", out.width = "100%")
+
+# wczytuję ramki danych z excela
+
+# path = paste0("analizy_html/excele/", analizyPOL[1,]$nazwa_excel_W1[[1]][[{{j}}]])
+# dane = read_excel_allsheets(path, TRUE)
+# obiekt = data.frame(typ_szk2 = analizyPOL[1,]$typ_szk2[[1]][[{{j}}]],
+#                     typ_szk2_dop2 = analizyPOL[1,]$typ_szk2_dop2[[1]][[{{j}}]])
+
+set_flextable_defaults(
+  font.family = "Cambria",
+  font.size = 10,
+  padding = 2,
+  border.color = "#CCCCCC",
+  line_spacing = 1.08,
+  digits = 2,
+  decimal.mark = ",",
+  big.mark = " ",
+  na_str = "<na>"
+)
+```
+
+
+```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},W1t6'}
+if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
+    obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
+      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia" ) {
+cat0("### Przychody - absolwenci ", obiekt$typ_szk2_dop2," z 2022 r. {-}\n\n")
+}
+if (obiekt$typ_szk2 %ni% c("Branżowa szkoła I stopnia", "Młodociani w Branżowej szkole I stopnia", "Niemłodociani w Branżowej szkole I stopnia")) {
+cat0("## Przychody - absolwenci ", obiekt$typ_szk2_dop2," z 2022 r. {-}\n\n")
+}
+
+   cat0("Tabela ", tab_num(), ": Średnie miesięczne przychody w czwartym kwartale 2022 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r. - w podziale na płeć\n\n")
+  
+dane_tab_W1(pelna_finalna_ramka_wskaznikow, "Technikum", "sexf", 2022, 2022) %>%
+  gentab_tab_D(2024)
+
+
+```
+
+```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},W1t11'}
+if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
+    obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
+      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia" |
+      obiekt$typ_szk2 %in% "Technikum" | obiekt$typ_szk2 %in% "Branżowa szkoła II stopnia" |
+      obiekt$typ_szk2 %in% "Szkoła policealna") {
+
+   cat0("Tabela ", tab_num(), ": Średnie miesięczne przychody w czwartym kwartale 2022 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r. - w podziale na zawody o największej liczbie absolwentów\n\n")
+  
+dane_tab_W1(pelna_finalna_ramka_wskaznikow, "Technikum", "nazwa_zaw", 2022, 2022) %>%
+  gentab_tab_D(2024)
+}
+```
+
+```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},W1t7'}
+
+   cat0("Tabela ", tab_num(), ": Średnie miesięczne przychody w całym 2023 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r. - ogółem i w podziale na płeć\n\n")
+  
+dane_tab_W1(pelna_finalna_ramka_wskaznikow, "Technikum", "sexf", 2022, 2023) %>%
+  gentab_tab_D(2024)
+
+```
+
+```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},W1t12'}
+if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
+    obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
+      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia" |
+      obiekt$typ_szk2 %in% "Technikum" | obiekt$typ_szk2 %in% "Branżowa szkoła II stopnia" |
+      obiekt$typ_szk2 %in% "Szkoła policealna") {
+
+   cat0("Tabela ", tab_num(), ": Średnie miesięczne przychody w całym 2023 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r. - w podziale na zawody o największej liczbie absolwentów\n\n")
+  
+dane_tab_W1(pelna_finalna_ramka_wskaznikow, "Technikum", "nazwa_zaw", 2022, 2023) %>%
+  gentab_tab_D(2024)
+}
+```
+
+```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},W1t8'}
+
+   cat0("Tabela ", tab_num(), ": Średnie miesięczne przychody w pierwszym kwartale 2024 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r. - ogółem i w podziale na płeć\n\n")
+  
+dane_tab_W1(pelna_finalna_ramka_wskaznikow, "Technikum", "sexf", 2022, 2024) %>%
+  gentab_tab_D(2024)
+```
+
+```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},W1t13'}
+if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
+    obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
+      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia" |
+      obiekt$typ_szk2 %in% "Technikum" | obiekt$typ_szk2 %in% "Branżowa szkoła II stopnia" |
+      obiekt$typ_szk2 %in% "Szkoła policealna") {
+
+   cat0("Tabela ", tab_num(), ": Średnie miesięczne przychody w pierwszym kwartale 2024 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r. - w podziale na zawody o największej liczbie absolwentów\n\n")
+  
+dane_tab_W1(pelna_finalna_ramka_wskaznikow, "Technikum", "nazwa_zaw", 2022, 2024) %>%
+  gentab_tab_D(2024)
+}
+```

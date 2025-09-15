@@ -85,15 +85,12 @@ dane_tab_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, rok_absolwent
 #' @export
 dane_wyk_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, rok_absolwentow) {
 
-  # 1. Filtrowanie danych zgodnie z wymaganiami
-  # WOJ_NAZWA = "Polska"
-  # wskaznik = "typ_szk2"
-  # rok_abs = podany parametr funkcji
+rok_abs <- rok_absolwentow
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "typ_szk2",
-      .data$rok_abs == {{rok_absolwentow}}
+      .data$rok_abs == rok_abs
     ) %>%
     pull(.data$wynik) %>% `[[`(1)
 

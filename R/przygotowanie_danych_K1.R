@@ -18,12 +18,13 @@
 dane_wyk_K1_plec <- function(pelna_finalna_ramka_wskaznikow,
                              typ_szk, rok_absolwentow, rok) {
 
+  rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "K1",
       .data$kryterium == "sexf",
-      .data$rok == rok,
+      .data$rok == rok_kal,
       .data$typ_szk2 == {{typ_szk}},
       .data$rok_abs == rok_absolwentow
     ) %>%
@@ -84,12 +85,13 @@ dane_wyk_K1_plec <- function(pelna_finalna_ramka_wskaznikow,
 dane_tab_K1_plec <- function(pelna_finalna_ramka_wskaznikow,
                              typ_szk, rok_absolwentow, rok) {
 
+  rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "K1",
       .data$kryterium == "sexf",
-      .data$rok == rok,
+      .data$rok == rok_kal,
       .data$typ_szk2 == {{typ_szk}},
       .data$rok_abs == rok_absolwentow
     ) %>%
@@ -139,12 +141,13 @@ dane_tab_K1_plec <- function(pelna_finalna_ramka_wskaznikow,
 dane_wyk_K1_zaw <- function(pelna_finalna_ramka_wskaznikow,
                              typ_szk, rok_absolwentow, rok) {
 
+  rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "K1",
       .data$kryterium == "nazwa_zaw",
-      .data$rok == rok,
+      .data$rok == rok_kal,
       .data$typ_szk2 == {{typ_szk}},
       .data$rok_abs == rok_absolwentow
     ) %>%
@@ -200,12 +203,13 @@ dane_wyk_K1_zaw <- function(pelna_finalna_ramka_wskaznikow,
 dane_tab_K1_zaw <- function(pelna_finalna_ramka_wskaznikow,
                             typ_szk, rok_absolwentow, rok) {
 
+  rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "K1",
       .data$kryterium == "nazwa_zaw",
-      .data$rok == rok,
+      .data$rok == rok_kal,
       .data$typ_szk2 == {{typ_szk}},
       .data$rok_abs == rok_absolwentow
     ) %>%

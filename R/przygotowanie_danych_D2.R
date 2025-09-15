@@ -185,7 +185,7 @@ dane_tab_D2_zaw <- function(pelna_finalna_ramka_wskaznikow,
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
-      .data$wskaznik == "S7",
+      .data$wskaznik == "D2",
       .data$kryterium == "nazwa_zaw",
       .data$typ_szk2 == {{typ_szk}},
       .data$rok_abs == rok_absolwentow
@@ -202,9 +202,11 @@ dane_tab_D2_zaw <- function(pelna_finalna_ramka_wskaznikow,
 
 
   dane_wyjsciowe <- dane_wejsciowe  %>%
-    filter(nazwa_zaw != "OGÓŁEM") %>%
+    filter(nazwa_zaw != "OGÓŁEM",
+           n_SUMA >= 10) %>%
     #slice(1:10) %>%
-    select(nazwa_zaw, n_SUMA, starts_with("pct_"), -`pct_Nie dotyczy`, -pct_SUMA) %>%
+    select(nazwa_zaw, n_SUMA, starts_with("pct_"),
+           -any_of(c("pct_Nie dotyczy", "pct_SUMA"))) %>%
     mutate(
       across(where(is.numeric), ~  round(.,digits = 2))) %>%
     rename(Zawód = nazwa_zaw,

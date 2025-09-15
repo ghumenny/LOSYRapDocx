@@ -325,3 +325,74 @@ dane_tab_K2dys_zaw <- function(pelna_finalna_ramka_wskaznikow,
 
   return(dane_wyjsciowe)
 }
+
+#' @title Przygotowanie danych do wykresu kontynuacji nauki (płeć)
+#' @description Funkcja wyciąga i przetwarza dane z pełnej ramki wskaźników,
+#'   aby przygotować je do generowania tabeli. Tworzy ramkę danych
+#'   z kolumnami w formacie będącym wejściem do funkcji gentab_tab_D z
+#'   tego pakietu.
+#' @param pelna_finalna_ramka_wskaznikow Ramka danych zawierająca pełne wyniki wskaźników.
+#'   Oczekuje, że kolumna 'wynik' zawiera zagnieżdżone ramki danych.
+#' @param typ_szk Zmienna tekstowa opisująca typ szkoły.
+#' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
+#' @return Ramka danych typu tibble w finalnym formacie do zasilania wykresów.
+#' @importFrom dplyr %>% filter pull select mutate starts_with if_else arrange
+#' @importFrom rlang .data
+#' @importFrom tidyr pivot_longer pivot_wider
+#' @importFrom stringr str_sub str_to_upper str_c
+#' @importFrom tibble tibble
+#' @export
+dane_wyk_K2dys_plec <- function(pelna_finalna_ramka_wskaznikow,
+                                typ_szk, rok_absolwentow) {
+
+  dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
+    filter(
+      .data$WOJ_NAZWA == "Polska",
+      .data$wskaznik == "K2",
+      .data$kryterium == "sexf",
+      .data$parametr_K2 == "dyscypliny",
+      .data$typ_szk2 == {{typ_szk}},
+      .data$rok_abs == rok_absolwentow
+    ) %>%
+    pull(.data$wynik) %>% `[[`(1)
+
+  if (is.null(dane_wejsciowe) ||
+      colnames(dane_wejsciowe)[1] %in% "Uwaga") {
+    message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
+    return(tibble(
+      Uwaga = "Brak danych wejściowych dla podanych kryteriów."
+    ))
+  }
+
+  dane_wyjsciowe <- dane_wejsciowe  %>%
+    mutate(sexf = if_else(sexf == "Mężczyzna", "Mężczyźni",
+                          if_else(sexf == "Kobieta", "Kobiety", "Ogółem"))) %>%
+    pivot_longer(2:ncol(dane_wejsciowe),
+                 names_to = c("liczba","dyscyplina"),
+                 values_to = "wartosc",
+                 names_sep = "_") %>%
+    pivot_wider(names_from = c(sexf,liczba),
+                values_from = wartosc,
+                names_sep = "_") %>%
+    arrange(desc(Ogółem_liczba)) %>%
+    select(dyscyplina, ends_with("_procent")) %>%
+    slice(2:11)  %>%
+    mutate(
+      dyscyplina = factor(dyscyplina, levels = unique(rev(dyscyplina)))
+    ) %>%
+    pivot_longer(2:4,
+                 names_to = c("plec"),
+                 values_to = "pct") %>%
+    mutate(
+      plec = if_else(plec == "Kobiety_procent", "Kobiety",
+                     if_else(plec == "Mężczyźni_procent", "Mężczyźni", "Ogółem")),
+      plec = factor(.data$plec, levels = c(
+        "Ogółem",
+        "Mężczyźni",
+        "Kobiety"
+      )),
+      pct = pct/100)
+
+
+  return(dane_wyjsciowe)
+}

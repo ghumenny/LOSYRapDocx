@@ -51,7 +51,7 @@ gentab_typsz_flext_og <- function(dane_do_tabeli, edycja) {
 gentab_typsz_flext_plec <- function(dane_do_tabeli, edycja) {
 
   # Sprawdzenie, czy dane wejściowe nie są puste
-  if (is.null(dane_do_tabeli) || nrow(dane_do_tabeli)[1] == 0) {
+  if (is.null(dane_do_tabeli) || colnames(dane_do_tabeli)[1] %in% "Uwaga") {
     message("Nie udostępnia się zagregowanych wyników monitoringu karier absolwentów obejmujących mniej niż 10 osób.")
   }
 
@@ -83,7 +83,7 @@ gentab_typsz_flext_plec <- function(dane_do_tabeli, edycja) {
 #' @export
 gentab_typsz_flext_zaw <- function(dane_do_tabeli, edycja) {
 
-  if (is.null(dane_do_tabeli) || nrow(dane_do_tabeli)[1] == 0) {
+  if (is.null(dane_do_tabeli) || colnames(dane_do_tabeli)[1] %in% "Uwaga") {
     message("Nie udostępnia się zagregowanych wyników monitoringu karier absolwentów obejmujących mniej niż 10 osób.")
   }
 
@@ -91,7 +91,7 @@ gentab_typsz_flext_zaw <- function(dane_do_tabeli, edycja) {
   x <- num_cols / 3
   kolumny_do_centrowania <- c()
   for (n in 0:(x - 1)) {
-    kolumny_do_centrowania <- c(kolumny_do_centrowania, n * x + 2, n * x + 3)
+    kolumny_do_centrowania <- c(kolumny_do_centrowania, n*3 + 2, n*3 + 3)
   }
 
 

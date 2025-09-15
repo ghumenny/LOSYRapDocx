@@ -214,7 +214,8 @@ dane_tab_D1_zaw <- function(pelna_finalna_ramka_wskaznikow,
 
 
   dane_wyjsciowe <- dane_wejsciowe  %>%
-    filter(nazwa_zaw != "OGÓŁEM") %>%
+    filter(nazwa_zaw != "OGÓŁEM",
+           n_SUMA >= 10) %>%
     #slice(1:10) %>%
     select(nazwa_zaw, n_SUMA, starts_with("pct_"), -pct_SUMA) %>%
     select(where(~ is.factor(.x) || sum(.x) !=0)) %>%

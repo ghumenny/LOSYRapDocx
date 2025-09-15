@@ -51,14 +51,14 @@ dane_wyk_S7_mscrok <- function(pelna_finalna_ramka_wskaznikow,
    mutate(
      miesiac_label = paste0(skroty_miesiecy[.data$numer_mies_num], "'",
                             str_sub(.data$rok, 3, 4)),
-     bezrobocie = .data$pct / 100,
+     pct = .data$pct / 100,
      status = S7
    ) %>%
    arrange(.data$rok, .data$numer_mies_num) %>%
    mutate(
      miesiac = factor(.data$miesiac_label, levels = unique(.data$miesiac_label))
    ) %>%
-   select(status, miesiac = miesiac_tekst, pct)
+   select(status, miesiac, pct)
 
 
   return(dane_wyjsciowe)
@@ -148,12 +148,13 @@ dane_tab_S7_mscrok <- function(pelna_finalna_ramka_wskaznikow,
 dane_wyk_S7_plec <- function(pelna_finalna_ramka_wskaznikow,
                              typ_szk, rok_absolwentow, rok) {
 
+  rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "S7",
       .data$kryterium == "sexf",
-      .data$rok == rok,
+      .data$rok == rok_kal,
       .data$typ_szk2 == {{typ_szk}},
       .data$rok_abs == rok_absolwentow
     ) %>%
@@ -202,12 +203,13 @@ dane_wyk_S7_plec <- function(pelna_finalna_ramka_wskaznikow,
 dane_tab_S7_plec <- function(pelna_finalna_ramka_wskaznikow,
                              typ_szk, rok_absolwentow, rok) {
 
+  rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "S7",
       .data$kryterium == "sexf",
-      .data$rok == rok,
+      .data$rok == rok_kal,
       .data$typ_szk2 == {{typ_szk}},
       .data$rok_abs == rok_absolwentow
     ) %>%
@@ -254,13 +256,13 @@ dane_tab_S7_plec <- function(pelna_finalna_ramka_wskaznikow,
 #' @export
 dane_wyk_S7_zaw <- function(pelna_finalna_ramka_wskaznikow,
                             typ_szk, rok_absolwentow, rok) {
-
+  rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "S7",
       .data$kryterium == "nazwa_zaw",
-      .data$rok == rok,
+      .data$rok == rok_kal,
       .data$typ_szk2 == {{typ_szk}},
       .data$rok_abs == rok_absolwentow
     ) %>%
@@ -310,13 +312,13 @@ dane_wyk_S7_zaw <- function(pelna_finalna_ramka_wskaznikow,
 #' @export
 dane_tab_S7_zaw <- function(pelna_finalna_ramka_wskaznikow,
                             typ_szk, rok_absolwentow, rok) {
-
+  rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "S7",
       .data$kryterium == "nazwa_zaw",
-      .data$rok == rok,
+      .data$rok == rok_kal,
       .data$typ_szk2 == {{typ_szk}},
       .data$rok_abs == rok_absolwentow
     ) %>%
@@ -360,14 +362,16 @@ dane_tab_S7_zaw <- function(pelna_finalna_ramka_wskaznikow,
 #' @importFrom rlang .data
 #' @importFrom stringr str_replace
 #' @export
-dane_tab_S7_pow <- function(pelna_finalna_ramka_wskaznikow, typ_szk, rok_absolwentow, rok) {
+dane_tab_S7_pow <- function(pelna_finalna_ramka_wskaznikow,
+                            typ_szk, rok_absolwentow, rok) {
 
+  rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "S7",
       .data$kryterium == "teryt_pow_szk",
-      .data$rok == rok,
+      .data$rok == rok_kal,
       .data$typ_szk2 == typ_szk,
       .data$rok_abs == rok_absolwentow
     ) %>%
