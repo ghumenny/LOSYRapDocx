@@ -4,20 +4,16 @@
 
 
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},d1setup', echo=FALSE, warning=FALSE, message=FALSE}
-
-# wczytuję ramki danych z excela
-knitr::opts_chunk$set(
-  echo=FALSE, warning=FALSE, message=FALSE, results='asis', fig.width = 10, fig.height = 10, fig.path = "figPOL/", out.width = "100%")
-
-# path = paste0("analizy_html/excele/", analizyPOL[1,]$nazwa_excel_d1[[1]][[{{j}}]])
-# dane = read_excel_allsheets(path, TRUE)
-# obiekt = data.frame(typ_szk2 = analizyPOL[1,]$typ_szk2[[1]][[{{j}}]],
-#                     typ_szk2_dop2 = analizyPOL[1,]$typ_szk2_dop2[[1]][[{{j}}]])
-
+```{r '{{typ_szk}},D1setup', echo=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, results='asis', 
+ fig.width = 10, fig.height = 10, fig.path = "figPOL/", 
+ out.width = "100%")
+typ_szk <-  "{{typ_szk}}"
+ewaluowana_edycja <- {{edycja}}
+ewaluowany_rok_abs <- {{rok_abs}}
 
 set_flextable_defaults(
-  font.family = "Cambria",
+#  font.family = "Cambria",
   font.size = 10,
   padding = 2,
   border.color = "#CCCCCC",
@@ -28,102 +24,70 @@ set_flextable_defaults(
   na_str = "<na>"
 )
 
-kolej <- c("świadectwo czeladnicze", "dyplom zawodowy", "tylko certyfikat kwalifikacji", "brak certyfikatów i dyplomu" )
-
 ```
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},d1w3', fig.width=10, fig.height=4}
+```{r '{{typ_szk}},d1w1', fig.width=10, fig.height=4}
 
-if (obiekt$typ_szk2 %in% "Liceum ogólnokształcące" |
-      obiekt$typ_szk2 %in% "Liceum ogólnokształcące dla dorosłych" |
-      obiekt$typ_szk2 %in% "Szkoła specjalna przysposabiająca do pracy") {
-cat0("## Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", obiekt$typ_szk2_dop2," z 2022 r. {-}  \n\n",
+if (typ_szk %in% c("Liceum ogólnokształcące",
+                   "Liceum ogólnokształcące dla dorosłych",
+                   "Szkoła specjalna przysposabiająca do pracy")) {
+cat0("## Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. {-}  \n\n",
     
-    "Absolwenci ", obiekt$typ_szk2_dop2," nie mogą zdobywać tego typu dyplomów.\n\n")
+    "Absolwenci ", dopelniacz(typ_szk)," nie mogą zdobywać tego typu dyplomów.\n\n")
 }
-if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-    obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia" ) {
-cat0("### Uzyskiwanie dyplomów zawodowych, świadectw czeladniczych i certyfikatów kwalifikacji zawodowych - absolwenci ", obiekt$typ_szk2_dop2," z 2022 r. {-}  \n\n")
+if (typ_szk %in% szkoly_branzowe) {
+cat0("### Uzyskiwanie dyplomów zawodowych, świadectw czeladniczych i certyfikatów kwalifikacji zawodowych - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. {-}  \n\n")
 }
-if (  obiekt$typ_szk2 %in% "Technikum" | obiekt$typ_szk2 %in% "Branżowa szkoła II stopnia" |
-      obiekt$typ_szk2 %in% "Szkoła policealna") {
-cat0("## Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", obiekt$typ_szk2_dop2," z 2022 r. {-} \n\n")  
+if (typ_szk %in% c("Technikum",
+                   "Branżowa szkoła II stopnia",
+                   "Szkoła policealna")) {
+cat0("## Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. {-} \n\n")  
 } 
 
-if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-      obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Technikum" | obiekt$typ_szk2 %in% "Branżowa szkoła II stopnia" |
-      obiekt$typ_szk2 %in% "Szkoła policealna") {
-  if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-      obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia") {
-cat0("Wykres ", wyk_num(), ": Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe", if(obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-      obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia") {", świadectw czeladniczych"}, " i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r. - ogółem i w podziale na płeć\n\n")
+if (tylko_tabele == FALSE &&
+    typ_szk %in% szkoly_z_zawodem) {
+cat0("Wykres ", wyk_num(), ": Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe", if(typ_szk %in% szkoly_branzowe) {", świadectw czeladniczych"}, " i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ",  dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. - ogółem i w podziale na płeć\n\n")
     
 (wykresDyplomyPlec %+% 
-    dane_wyk_D1_plec(pelna_finalna_ramka_wskaznikow, "Technikum", 2022)) |> # podmiana danych
+    dane_wyk_D1_plec(pelna_finalna_ramka_wskaznikow, 
+                     typ_szk, ewaluowany_rok_abs)) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 16) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
-  zmien_rok_w_podpisie(2024)
-}
+  zmien_rok_w_podpisie(ewaluowana_edycja)
 }
 ```
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},d1t3'}
-if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-      obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Technikum" | obiekt$typ_szk2 %in% "Branżowa szkoła II stopnia" |
-      obiekt$typ_szk2 %in% "Szkoła policealna") {
-if (!colnames(dane$d1_22_sex)[1] %in% "Uwaga") {
-  cat0("Tabela ", tab_num(), ": Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe", if(obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-      obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia") {", świadectw czeladniczych"}, " i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r. - ogółem i w podziale na płeć\n\n")
+```{r '{{typ_szk}},d1t1'}
+if (typ_szk %in% szkoly_z_zawodem) {
+  cat0("Tabela ", tab_num(), ": Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe", if(typ_szk %in% szkoly_branzowe) {", świadectw czeladniczych"}, " i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. - ogółem i w podziale na płeć\n\n")
   
-dane_tab_D1_plec(pelna_finalna_ramka_wskaznikow, "Technikum", 2022) %>% gentab_tab_D(2024)
-}
+dane_tab_D1_plec(pelna_finalna_ramka_wskaznikow, 
+                 typ_szk, ewaluowany_rok_abs) %>% 
+  gentab_tab_D(ewaluowana_edycja)
 }
 ```
 
 
-```{r  '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},d1w7'}
-if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-      obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Technikum" | obiekt$typ_szk2 %in% "Branżowa szkoła II stopnia" |
-      obiekt$typ_szk2 %in% "Szkoła policealna") {
-  if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-      obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia") {
-cat0("Wykres ", wyk_num(), ": Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe", if(obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-      obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia") {", świadectw czeladniczych"}, " i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r. - w podziale na zawody o największej liczbie absolwentów\n\n")
+```{r  '{{typ_szk}},d1w2'}
+if (tylko_tabele == FALSE &&
+    typ_szk %in% szkoly_z_zawodem) {
+cat0("Wykres ", wyk_num(), ": Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe", if(typ_szk %in% szkoly_branzowe) {", świadectw czeladniczych"}, " i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. - w podziale na zawody o największej liczbie absolwentów\n\n")
     
 (wykresDyplomyZawod %+%
-    dane_wyk_D1_zaw(pelna_finalna_ramka_wskaznikow, "Technikum", 2022) ) |> # podmiana danych
+    dane_wyk_D1_zaw(pelna_finalna_ramka_wskaznikow, 
+                    typ_szk, ewaluowany_rok_abs) ) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 16) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
-  zmien_rok_w_podpisie(2024)
-  }    
+  zmien_rok_w_podpisie(ewaluowana_edycja)
 }
 ```
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},d1wt7'}
-if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-      obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Technikum" | obiekt$typ_szk2 %in% "Branżowa szkoła II stopnia" |
-      obiekt$typ_szk2 %in% "Szkoła policealna") {
-if (!colnames(dane$d1_22_zaw)[1] %in% "Uwaga") {
-  cat0("Tabela ", tab_num(), ": Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe", if(obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia" |
-      obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia") {", świadectw czeladniczych"}, " i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r. - w podziale na zawody o największej liczbie absolwentów\n\n")
-dane_tab_D1_zaw(pelna_finalna_ramka_wskaznikow, "Technikum", 2022) %>%
-  gentab_tab_D(2024)
-}
+```{r '{{typ_szk}},d1t2'}
+if (typ_szk %in% szkoly_z_zawodem) {
+cat0("Tabela ", tab_num(), ": Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe", if(typ_szk %in% szkoly_branzowe) {", świadectw czeladniczych"}, " i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. - w podziale na zawody o największej liczbie absolwentów\n\n")
+dane_tab_D1_zaw(pelna_finalna_ramka_wskaznikow, 
+                typ_szk, ewaluowany_rok_abs) %>%
+  gentab_tab_D(ewaluowana_edycja)
 }
 ```
 

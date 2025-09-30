@@ -85,7 +85,7 @@ gentab_typsz_flext_zaw <- function(dane_do_tabeli, edycja) {
 
   if (is.null(dane_do_tabeli) || colnames(dane_do_tabeli)[1] %in% "Uwaga") {
     message("Nie udostępnia się zagregowanych wyników monitoringu karier absolwentów obejmujących mniej niż 10 osób.")
-  }
+  } else {
 
   num_cols <- ncol(dane_do_tabeli)
   x <- num_cols / 3
@@ -106,4 +106,5 @@ gentab_typsz_flext_zaw <- function(dane_do_tabeli, edycja) {
     add_footer_lines(values = paste0("Źródło: Dane z monitoringu karier absolwentów szkół ponadpodstawowych pozyskane w ", edycja, " r.\n\n"), top = FALSE)
 
   return(tabela_flextable)
+  }
 }

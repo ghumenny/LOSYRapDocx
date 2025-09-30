@@ -6,19 +6,20 @@
 
 
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6setup',  echo=FALSE, warning=FALSE, message=FALSE}
-# wczytuję ramki danych z excela
-knitr::opts_chunk$set(
-  echo=FALSE, warning=FALSE, message=FALSE, results='asis', fig.width = 10, fig.height = 10, fig.path = "figPOL/", out.width = "100%")
-
-# path = paste0("analizy_html/excele/", analizyPOL[1,]$nazwa_excel_S6[[1]][[{{j}}]])
-# dane = read_excel_allsheets(path, TRUE)
-# obiekt = data.frame(typ_szk2 = analizyPOL[1,]$typ_szk2[[1]][[{{j}}]],
-#                     typ_szk2_dop2 = analizyPOL[1,]$typ_szk2_dop2[[1]][[{{j}}]])
-
+```{r '{{typ_szk}},s6setup', echo=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, results='asis', 
+                      fig.width = 10, fig.height = 10, fig.path = "figPOL/", 
+                      out.width = "100%")
+typ_szk <-  "{{typ_szk}}"
+ewaluowana_edycja <- {{edycja}}
+ewaluowany_rok_abs <- {{rok_abs}}
+ewaluowany_rok <- {{rok}}
+if ({{edycja}} == {{rok_abs}} + 2) {
+  ewaluowany_kolejny_rok = {{rok_abs}} + 1
+}
 
 set_flextable_defaults(
-  font.family = "Cambria",
+#  font.family = "Cambria",
   font.size = 10,
   padding = 2,
   border.color = "#CCCCCC",
@@ -31,140 +32,175 @@ set_flextable_defaults(
 ```
 
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6w1', fig.width = 10, fig.height = 6}
-if (obiekt$typ_szk2 %in% "Branżowa szkoła I stopnia") {
-    cat0('# Absolwenci ', obiekt$typ_szk2_dop2, " z 2022 r.  {-} \n\n")
-cat0('## Absolwenci ', obiekt$typ_szk2_dop2, " ogółem  {-} \n\n")
-cat0("### Status edukacyjno-zawodowy - absolwenci ", obiekt$typ_szk2_dop2," z 2022 r. {-} \n\n")
+```{r '{{typ_szk}},s6w1', fig.width = 10, fig.height = 6}
+if (typ_szk %in% "Branżowa szkoła I stopnia") {
+    cat0('# Absolwenci ', dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. {-} \n\n")
+cat0('## Absolwenci ', dopelniacz(typ_szk), " ogółem  {-} \n\n")
+cat0("### Status edukacyjno-zawodowy - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. {-} \n\n")
 }
 
-if (obiekt$typ_szk2 %in% "Młodociani w Branżowej szkole I stopnia" |
-      obiekt$typ_szk2 %in% "Niemłodociani w Branżowej szkole I stopnia" ) {
-    cat0('## Absolwenci ', obiekt$typ_szk2_dop2, " z 2022 r.   {-}\n\n")
+if (typ_szk %in% c("Młodociani w Branżowej szkole I stopnia", 
+                   "Niemłodociani w Branżowej szkole I stopnia")) {
+    cat0('## Absolwenci ', dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. {-} \n\n")
 
-cat0("### Status edukacyjno-zawodowy - absolwenci ", obiekt$typ_szk2_dop2," z 2022 r. {-} \n\n")
+cat0("### Status edukacyjno-zawodowy - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. {-} \n\n")
 }
 
-if (obiekt$typ_szk2 %ni% c("Branżowa szkoła I stopnia", "Młodociani w Branżowej szkole I stopnia", "Niemłodociani w Branżowej szkole I stopnia")) {
-cat0('# Absolwenci ', obiekt$typ_szk2_dop2, " z 2022 r.   {-}\n\n")
+if (typ_szk %ni% szkoly_branzowe) {
+cat0('# Absolwenci ', dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. {-} \n\n")
 
-cat0("## Status edukacyjno-zawodowy - absolwenci ", obiekt$typ_szk2_dop2," z 2022 r.  {-} \n\n")
+cat0("## Status edukacyjno-zawodowy - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. {-} \n\n")
 }
-cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w poszczególnych miesiącach od lipca roku zakończenia nauki - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - ogółem\n\n")
+
+if (tylko_tabele == FALSE) {
+cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w poszczególnych miesiącach od lipca roku zakończenia nauki - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - ogółem\n\n")
+
 
 (wykresStatusy %+%
-    dane_wyk_S7_mscrok(pelna_finalna_ramka_wskaznikow, "Technikum", 2022)) |> # podmiana danych
-  zmien_wielkosc_czcionek(baseSize = 16) |> # zmiana wielkości czcionki
+    dane_wyk_S7_mscrok(pelna_finalna_ramka_wskaznikow, 
+                       typ_szk, ewaluowany_rok_abs)) |> # podmiana danych
+  zmien_wielkosc_czcionek(baseSize = 14) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
-  zmien_rok_w_podpisie(2024) # zmiana roku w podpisie
-
-
-```
-
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6t1'}
-
-  cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w poszczególnych miesiącach od lipca roku zakończenia nauki - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - ogółem\n\n")
-  
-dane_tab_S7_mscrok(pelna_finalna_ramka_wskaznikow, "Technikum", 2022) %>%
-gentab_tab_S7(2024)
+  zmien_rok_w_podpisie(ewaluowana_edycja) # zmiana roku w podpisie
+}
 
 ```
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6w6', fig.height = 4}
+```{r '{{typ_szk}},s6t1'}
 
-cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu 2022 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - w podziale na płeć\n\n")
+cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w poszczególnych miesiącach od lipca roku zakończenia nauki - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - ogółem\n\n")
+
+dane_tab_S7_mscrok(pelna_finalna_ramka_wskaznikow, 
+                   typ_szk, ewaluowany_rok_abs) %>%
+  gentab_tab_S7(ewaluowana_edycja)
+
+```
+
+```{r '{{typ_szk}},s6w2', fig.height = 4}
+if (tylko_tabele == FALSE) {
+  cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
 
     
 (wykresStatusyPlec %+%
-    dane_wyk_S7_plec(pelna_finalna_ramka_wskaznikow, "Technikum", 2022, 2022)) |> # podmiana danych
+    dane_wyk_S7_plec(pelna_finalna_ramka_wskaznikow, 
+                     typ_szk, ewaluowany_rok_abs, ewaluowany_rok)) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 16) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
-  zmien_rok_w_podpisie(2024) # zmiana roku w podpisie
-
+  zmien_rok_w_podpisie(ewaluowana_edycja) # zmiana roku w podpisie
+}
 ```
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6t6'}
-
-  cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu 2022 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - w podziale na płeć\n\n")
+```{r '{{typ_szk}},s6t2'}
+cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
  
-dane_tab_S7_plec(pelna_finalna_ramka_wskaznikow, "Technikum", 2022, 2022) %>% gentab_tab_S7(2024)
+dane_tab_S7_plec(pelna_finalna_ramka_wskaznikow, 
+                 typ_szk, ewaluowany_rok_abs, ewaluowany_rok) %>% 
+  gentab_tab_S7(ewaluowana_edycja)
 
 ```
 
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6w7', fig.height = 4}
+```{r '{{typ_szk}},s6w3', fig.height = 4}
+if (ewaluowana_edycja == (ewaluowany_rok_abs + 2) &&
+    tylko_tabele == FALSE) {
+  cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
 
-cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu 2023 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - w podziale na płeć\n\n")
-
- (wykresStatusyPlec %+%
-    dane_wyk_S7_plec(pelna_finalna_ramka_wskaznikow, "Technikum", 2022, 2023)) |> # podmiana danych
-  zmien_wielkosc_czcionek(baseSize = 14) |> # zmiana wielkości czcionki
+    
+(wykresStatusyPlec %+%
+    dane_wyk_S7_plec(pelna_finalna_ramka_wskaznikow, 
+                     typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok)) |> # podmiana danych
+  zmien_wielkosc_czcionek(baseSize = 16) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
-  zmien_rok_w_podpisie(2024) # zmiana roku w podpisie
-
+  zmien_rok_w_podpisie(ewaluowana_edycja) # zmiana roku w podpisie
+}
 ```
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6t7'}
-
-
-  cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu 2023 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - w podziale na płeć\n\n")
+```{r '{{typ_szk}},s6t3'}
+if (ewaluowana_edycja == (ewaluowany_rok_abs + 2)) {
+cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
  
-dane_tab_S7_plec(pelna_finalna_ramka_wskaznikow, "Technikum", 2022, 2023) %>% gentab_tab_S7(2024)
-
+dane_tab_S7_plec(pelna_finalna_ramka_wskaznikow, 
+                 typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok) %>% 
+  gentab_tab_S7(ewaluowana_edycja)
+}
 ```
 
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6w3'}
+```{r '{{typ_szk}},s6w4'}
+if (tylko_tabele == FALSE && 
+    typ_szk %in% szkoly_z_zawodem) {
+cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
 
-cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu 2022 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - w podziale na zawody o największej liczbie absolwentów\n\n")
 
 (wykresStatusyZawod %+%
-    dane_wyk_S7_zaw(pelna_finalna_ramka_wskaznikow, "Technikum", 2022, 2022)) |> # podmiana danych
+    dane_wyk_S7_zaw(pelna_finalna_ramka_wskaznikow, 
+                    typ_szk, ewaluowany_rok_abs, ewaluowany_rok)) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 14) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
-  zmien_rok_w_podpisie(2024) # zmiana roku w podpisie  
+  zmien_rok_w_podpisie(ewaluowana_edycja) # zmiana roku w podpisie  
+}
 ```
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6t3'}
-  cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu 2022 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - w podziale na zawody o największej liczbie absolwentów\n\n")
+```{r '{{typ_szk}},s6t4'}
+if (typ_szk %in% szkoly_z_zawodem)  {
+cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
+
  
 
-dane_tab_S7_zaw(pelna_finalna_ramka_wskaznikow, "Technikum", 2022, 2022) %>% gentab_tab_S7(2024)
+dane_tab_S7_zaw(pelna_finalna_ramka_wskaznikow, 
+                typ_szk, ewaluowany_rok_abs, ewaluowany_rok) %>% 
+  gentab_tab_S7(ewaluowana_edycja)
+}
 ```
 
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6w4'}
+```{r '{{typ_szk}},s6w5'}
+if (ewaluowana_edycja == (ewaluowany_rok_abs + 2) &&
+    tylko_tabele == FALSE && 
+    typ_szk %in% szkoly_z_zawodem) {
+cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
 
-cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu 2023 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - w podziale na zawody o największej liczbie absolwentów\n\n")
 
 (wykresStatusyZawod %+%
-    dane_wyk_S7_zaw(pelna_finalna_ramka_wskaznikow, "Technikum", 2022, 2023)) |> # podmiana danych
+    dane_wyk_S7_zaw(pelna_finalna_ramka_wskaznikow, 
+                    typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok)) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 14) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
-  zmien_rok_w_podpisie(2024) # zmiana roku w podpisie 
+  zmien_rok_w_podpisie(ewaluowana_edycja) # zmiana roku w podpisie  
+}
 ```
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6t4'}
+```{r '{{typ_szk}},s6t5'}
+if (ewaluowana_edycja == (ewaluowany_rok_abs + 2) &&
+    typ_szk %in% szkoly_z_zawodem)  {
+cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
 
-  cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu 2023 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - w podziale na zawody o największej liczbie absolwentów\n\n")
  
 
-dane_tab_S7_zaw(pelna_finalna_ramka_wskaznikow, "Technikum", 2022, 2023) %>% gentab_tab_S7(2024)
+dane_tab_S7_zaw(pelna_finalna_ramka_wskaznikow, 
+                typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok) %>% 
+  gentab_tab_S7(ewaluowana_edycja)
+}
 ```
 
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6t8'}
-
-  cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu 2022 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - w podziale na powiaty\n\n")
+```{r '{{typ_szk}},s6t6'}
+cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na powiaty\n\n")
  
-dane_tab_S7_pow(pelna_finalna_ramka_wskaznikow, "Technikum", 2022, 2022) %>% gentab_tab_S7(2024) 
+dane_tab_S7_pow(pelna_finalna_ramka_wskaznikow, 
+                typ_szk, ewaluowany_rok_abs, ewaluowany_rok) %>% 
+  gentab_tab_S7(ewaluowana_edycja) 
 ```
 
 
-```{r '{{analizyPOL[1,]$typ_szk2_skrot[[1]][[j]]}},s6t9'}
-  cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu 2023 r. - absolwenci ", obiekt$typ_szk2_dop2, " z 2022 r.  - w podziale na powiaty\n\n")
+```{r '{{typ_szk}},s6t7'}
+if (ewaluowana_edycja == (ewaluowany_rok_abs + 2)) {
+  cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na powiaty\n\n")
  
-dane_tab_S7_pow(pelna_finalna_ramka_wskaznikow, "Technikum", 2022, 2023) %>% gentab_tab_S7(2024) 
+dane_tab_S7_pow(pelna_finalna_ramka_wskaznikow, 
+                typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok) %>% 
+  gentab_tab_S7(ewaluowana_edycja) 
+}
 ```
 
 

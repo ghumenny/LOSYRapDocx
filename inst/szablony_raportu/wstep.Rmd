@@ -11,12 +11,19 @@ editor_options:
 <br> <br> <br>
 
 ```{r 'Polska.meta.setup',  echo=FALSE, warning=FALSE, message=FALSE}
-# wczytuję ramki danych z excela
-knitr::opts_chunk$set(
-  echo=FALSE, warning=FALSE, message=FALSE, results='asis', fig.width = 10, fig.height = 10, fig.path = "figPOL/", out.width = "100%")
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, results='asis', 
+                      fig.width = 10, fig.height = 10, fig.path = "figPOL/", 
+                      out.width = "100%")
+
+ewaluowana_edycja <- {{edycja}}
+ewaluowany_rok_abs <- {{rok_abs}}
+ewaluowany_rok <- {{rok}}
+if ({{edycja}} == {{rok_abs}} + 2) {
+  ewaluowany_kolejny_rok = {{rok_abs}} + 1
+} 
 
 set_flextable_defaults(
-  font.family = "Cambria",
+#  font.family = "Cambria",
   font.size = 10,
   padding = 2,
   border.color = "#CCCCCC",
@@ -55,7 +62,7 @@ Monitoring opiera się na danych dotyczących nauki w systemie oświaty (dane po
 
 ```{r 'Polska.t1wp', echo=FALSE, results='asis'}
 cat0("Tabela ", tab_num(), ": Źródła i zakres danych wykorzystanych w raporcie\n")
-tibble(
+tabelka1 <- tibble(
   `Źródło danych`= c("Dane Systemu Informacji Oświatowej", "Dane systemu egzaminów zewnętrznych OKE, Dane Systemu Informacji Oświatowej", "Dane systemu POL-on", "Dane ZUS"),
  `Podmiot udostępniający dane` = c("Centrum Informatyczne Edukacji", "Centralna Komisja Egzaminacyjna oraz Okręgowe Komisje Egzaminacyjne, Centrum Informatyczne Edukacji", "Ośrodek Przetwarzania Informacji - Państwowy Instytut Badawczy (OPI)", "Zakład Ubezpieczeń Społecznych"),
  `Zakres pozyskanych danych` = c("Podstawowe informacje na temat absolwentów: płeć, wiek i rok ukończenia nauki, status młodocianego pracownika. Informacja o zawodzie i branży, w której kształcił się absolwent. Informacja o typie szkoły, jej lokalizacji oraz identyfikator pozwalający na udostępnienie konkretnej szkole wyników dotyczących jej absolwentów. Dla absolwentów kontynuujących naukę w systemie oświaty - informacja o typie szkoły, zawodzie i branży, w której kontynuują naukę.", "Podstawowe informacje pozwalające określić, czy kształcenie zawodowe absolwenta zostało zakończone zdaniem egzaminów potwierdzających nabycie umiejętności przewidzianych programem kształcenia - w odniesieniu do uczniów szkół ponadpodstawowych, którzy zdają egzaminy w systemie egzaminów zewnętrznych. Zakres pozyskiwanych danych pozwala określić zarówno, czy absolwent zdał egzamin maturalny, jak też czy zdał egzaminy zawodowe/egzamin czeladniczy.", "Informacje o rozpoczęciu lub zakończeniu studiów (bądź skreśleniu z listy studentów) oraz ich kierunku.", "Informacje pozwalające zidentyfikować okresy i formy w których absolwenci byli zatrudnieni, okresy zarejestrowanego bezrobocia, a także braku aktywności zawodowej (rejestrowanej w ZUS). Sytuację absolwenta w danym miesiącu można określić na podstawie kodów tytułów ubezpieczenia lub świadczenia oraz przypisanych do nich okresów. Wysokość zarobków brutto jest ustalana dzięki informacji o podstawie wymiaru składek ubezpieczeniowych.")) %>% 
@@ -65,6 +72,7 @@ tibble(
     align_nottext_col(align = "center") %>% 
   add_footer_lines(values = "Źródło: Opracowanie własne\n\n", top = FALSE) %>% 
    border_inner_h(part="all")
+tabelka1
 ```
 
 [^4]
@@ -136,7 +144,7 @@ Ustalając kryterium dla kontynuacji nauki przyjęto minimalny okres trwania epi
 
 ```{r 'Polska.t2wp', echo=FALSE, results='asis'}
 cat0("Tabela ", tab_num(), ": Szczegółowy opis kategorii wskaźnika statusu edukacyjno-zawodowego\n")
-tibble(
+tabelka2 <- tibble(
   `Kategoria` = "Znaczenie kategorii",
   `1. Tylko nauka` = "W takiej sytuacji są osoby, o których wiadomo, że odbywają edukację formalną w Polsce i jednocześnie figurują w rejestrze ZUS z tytułu innego niż aktualne wykonywanie pracy (“innym tytułem” może być w szczególności status osoby bezrobotnej, przebywanie na urlopie macierzyńskim lub wychowawczym) lub nie figurują w rejestrze ZUS z żadnego tytułu, w związku z tym ich sytuacja zawodowa nie jest znana. Nie jest wykluczone, że pracują za granicą u zagranicznego pracodawcy lub korzystając z ubezpieczenia w innym systemie niż ZUS (np. KRUS) albo na podstawie umowy o dzieło lub (jeżeli mają nie więcej niż 26 lat) umowy zlecenia, a także że wykonują działalność nierejestrową lub pracę bez umowy “na czarno”).",
   `2. Nauka i praca` = "W takiej sytuacji są osoby, o których wiadomo, że odbywają edukację formalną w Polsce, a zarazem figurują w rejestrze ZUS z tytułu aktualnego wykonywania pracy etatowej, prowadzenia indywidualnej działalności gospodarczej albo - ale tylko, jeśli mają więcej niż 26 lat - umowy zlecenia. Nie jest natomiast uwzględniona praca za granicą u zagranicznego pracodawcy, praca związana z korzystaniem z ubezpieczenia w innym systemie niż ZUS (np. KRUS), praca na podstawie umowy o dzieło  - a w przypadku osób, które mają nie więcej niż 26 lat również praca na podstawie umowy zlecenia - działalność nierejestrowa ani praca “na czarno”.",
@@ -152,6 +160,7 @@ Nie jest wykluczone, że pracują za granicą u zagranicznego pracodawcy lub kor
     set_table_properties(width = 1, layout = "autofit") %>%    
     align_nottext_col(align = "center") %>% add_footer_lines(values = "Źródło: Opracowanie własne\n\n", top = FALSE) %>% 
    border_inner_h(part="all")
+tabelka2
 ```
 
 [^6]
@@ -235,9 +244,9 @@ Z kolei zawody dwukwalifikacyjne najczęściej nauczane były w technikach[^12].
 
 ```{r 'Polska.t3wp', echo=FALSE, results='asis'}
 cat0("Tabela ", tab_num(), ": Podstawa programowa, według której absolwenci przystępowali do egzaminów  w podziale na typ szkół.\n")
-tibble(
- `Rok ukończenia szkoły`= c("2022"),
- `Typ szkoły_Branżowa Szkoła I st` = c("podst. prog. 2017 lub 2019"),
+tabelka3 <- tibble(
+ `Rok ukończenia szkoły`= c("2023"),
+ `Typ szkoły_Branżowa Szkoła I st` = c("podst. prog. 2019"),
  `Typ szkoły_Branżowa Szkoła II st` = c("podst. prog. 2019"),
  `Typ szkoły_Technikum` = c("podst. prog. 2017"),
  `Typ szkoły_Szkoła policealna` = c("podst. prog. 2019")) %>% 
@@ -246,6 +255,7 @@ tibble(
     set_table_properties(width = 1, layout = "autofit") %>%    
     align(part = "all", j = 2:4, align = "center") %>% 
    border_inner_h(part="all")
+tabelka3
 cat0("\n\n") 
 ```
 
@@ -262,53 +272,64 @@ Z tego względu informacja o poziomie uzyskiwania dokumentów potwierdzających 
 ## Absolwenci poszczególnych typów szkół z 2022 r. w ujęciu krajowym
 
 
-```{r 'Polska.meta.t1'}
+```{r 'Polska.meta.t1', results='asis'}
 
 cat0("Tabela ", tab_num(), ": Struktura populacji absolwentów objętych monitoringiem według typów szkół\n\n")    
   
-dane_tab_meta_typsz_og(pelna_finalna_ramka_wskaznikow, 2022) %>% gentab_typsz_flext_og(2024)
+tabelka <- dane_tab_meta_typsz_og(pelna_finalna_ramka_wskaznikow, 
+                       ewaluowany_rok_abs) %>% 
+  gentab_typsz_flext_og(ewaluowana_edycja)
+tabelka
 ```
 
 ```{r 'Polska.meta.w1', fig.width=10, fig.height=4}
-
+if (tylko_tabele == FALSE) {
 cat0("Wykres ", wyk_num(), ": Struktura populacji absolwentów objętych monitoringiem według typów szkół\n")
 
-(wykresTypySzkol %+% 
-    dane_wyk_meta_typsz_og(pelna_finalna_ramka_wskaznikow, 2022)) |> # podmiana danych
+wykresik <- (wykresTypySzkol %+% 
+    dane_wyk_meta_typsz_og(pelna_finalna_ramka_wskaznikow, 
+                           ewaluowany_rok_abs)) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 16) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
-  zmien_rok_w_podpisie(2024) # zmiana roku w podpisie
-
+  zmien_rok_w_podpisie(ewaluowana_edycja) # zmiana roku w podpisie
+}
+print(wykresik)
 ```
 
 ```{r 'Polska.meta.t2'}
-cat0("## Absolwenci poszczególnych typów szkół z 2022 r. w ujęciu krajowym – w podziale na płeć\n\n")
+cat0("## Absolwenci poszczególnych typów szkół z ", ewaluowany_rok_abs, " r. w ujęciu krajowym – w podziale na płeć\n\n")
 
-cat0("Tabela ", tab_num(), ": Struktura absolwentów objętych monitoringiem według typów szkół i płci z roku 2022\n\n")
+cat0("Tabela ", tab_num(), ": Struktura absolwentów objętych monitoringiem według typów szkół i płci z roku ", ewaluowany_rok_abs, "\n\n")
   
-dane_tab_meta_typsz_plec(pelna_finalna_ramka_wskaznikow, 2022) %>% gentab_typsz_flext_plec(2024)
-
+tabelka <- dane_tab_meta_typsz_plec(pelna_finalna_ramka_wskaznikow, 
+                         ewaluowany_rok_abs) %>% 
+  gentab_typsz_flext_plec(ewaluowana_edycja)
+tabelka
 ```
 
 ```{r 'Polska.meta.w2', fig.width=10, fig.height=4}
-cat0("Wykres ", wyk_num(), ": Struktura absolwentów objętych monitoringiem według typów szkół i płci z roku 2022\n\n")    
-
-
-(wykresPlec %+% 
-    dane_wyk_meta_typsz_plec(pelna_finalna_ramka_wskaznikow, 2022)) |> # podmiana danych
+if (tylko_tabele == FALSE) {
+  cat0("Wykres ", wyk_num(), ": Struktura absolwentów objętych monitoringiem według typów szkół i płci z roku ", ewaluowany_rok_abs, "\n\n")    
+wykresik <- (wykresPlec %+% 
+    dane_wyk_meta_typsz_plec(pelna_finalna_ramka_wskaznikow, 
+                             ewaluowany_rok_abs)) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 16) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
-  zmien_rok_w_podpisie(2024) # zmiana roku w podpisie
-
+  zmien_rok_w_podpisie(ewaluowana_edycja) # zmiana roku w podpisie
+print(wykresik)
+}
 ```
 
 
 ```{r 'Polska.meta.t4'}
 cat0("## Absolwenci poszczególnych typów szkół w ujęciu krajowym w 10 najpopularniejszych zawodach\n\n")
 
-cat0("Tabela ", tab_num(), ": Zawody o największej liczbie absolwentów objętych monitoringiem według typów szkół z roku 2022\n\n")
+cat0("Tabela ", tab_num(), ": Zawody o największej liczbie absolwentów objętych monitoringiem według typów szkół z roku ", ewaluowany_rok_abs, "\n\n")
   
-dane_wyk_meta_typsz_zaw(pelna_finalna_ramka_wskaznikow, 2022) %>% gentab_typsz_flext_zaw(2024)
+tabelka <- dane_wyk_meta_typsz_zaw(pelna_finalna_ramka_wskaznikow, 
+                        ewaluowany_rok_abs) %>% 
+  gentab_typsz_flext_zaw(ewaluowana_edycja)
+tabelka
 ```
 
 **W dalszej części raportu wyniki są analizowane wyłącznie zbiorczo i przedstawiane dla grup liczących co najmniej 10 osób.**

@@ -312,12 +312,15 @@ dane_wyk_meta_typsz_zaw <- function(pelna_finalna_ramka_wskaznikow, rok_absolwen
     ) %>%
     pull(.data$wynik) %>% `[[`(1)
   # Sprawdzenie, czy dane wejściowe nie są puste
-  if (is.null(dane_wejsciowe) || nrow(dane_wejsciowe)[1] == 0) {
+  if (is.null(dane_wejsciowe)  ||
+      colnames(dane_wejsciowe)[1] %in% "Uwaga") {
     message("Brak danych do wygenerowania tabeli. Zwracam pusty obiekt flextable.")
     return(tibble(
       Uwaga = "Brak danych wejściowych dla podanych kryteriów."
     ))
   }
-
-  return(dane_wejsciowe)
+  dane_wyjsciowe <- dane_wejsciowe %>%
+    mutate(
+      across(where(is.numeric), ~  round(.,digits = 1)))
+  return(dane_wyjsciowe)
 }
