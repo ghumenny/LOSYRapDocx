@@ -124,7 +124,8 @@ cat0("Wykres ", wyk_num(), ": Poziom bezrobocia (odsetek zarejestrowanych) w gru
 
 (wykresBezrobocieZawod %+%
     dane_wyk_B1_zaw(pelna_finalna_ramka_wskaznikow, 
-                    typ_szk, ewaluowany_rok_abs, ewaluowany_rok)) |> # podmiana danych
+                    typ_szk, ewaluowany_rok_abs, 
+                    ewaluowany_rok)) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 16) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
   zmien_rok_w_podpisie(ewaluowana_edycja)   
@@ -136,20 +137,23 @@ if (typ_szk %in% szkoly_z_zawodem) {
   cat0("Tabela ", tab_num(), ": Poziom bezrobocia (odsetek zarejestrowanych) w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na zawody o największej liczbie absolwentów\n\n")
  
 dane_tab_B1_zaw(pelna_finalna_ramka_wskaznikow, 
-                typ_szk, ewaluowany_rok_abs, ewaluowany_rok) %>%
+                typ_szk, ewaluowany_rok_abs, 
+                ewaluowany_rok, tylko_tabele) %>%
   gentab_tab_D(ewaluowana_edycja)
 }
 ```
 
 
 ```{r '{{typ_szk}},b1w5'}
-if (tylko_tabele == FALSE && 
+if (ewaluowana_edycja == (ewaluowany_rok_abs + 2) &&
+    tylko_tabele == FALSE && 
     typ_szk %in% szkoly_z_zawodem) {
 cat0("Wykres ", wyk_num(), ": Poziom bezrobocia (odsetek zarejestrowanych) w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na zawody o największej liczbie absolwentów\n\n")
 
 (wykresBezrobocieZawod %+%
     dane_wyk_B1_zaw(pelna_finalna_ramka_wskaznikow, 
-                    typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok)) |> # podmiana danych
+                    typ_szk, ewaluowany_rok_abs, 
+                    ewaluowany_kolejny_rok)) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 16) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
   zmien_rok_w_podpisie(ewaluowana_edycja)   
@@ -157,11 +161,13 @@ cat0("Wykres ", wyk_num(), ": Poziom bezrobocia (odsetek zarejestrowanych) w gru
 ```
 
 ```{r '{{typ_szk}},b1t5'}
-if (typ_szk %in% szkoly_z_zawodem) {
+if (ewaluowana_edycja == (ewaluowany_rok_abs + 2) &&
+    typ_szk %in% szkoly_z_zawodem) {
   cat0("Tabela ", tab_num(), ": Poziom bezrobocia (odsetek zarejestrowanych) w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na zawody o największej liczbie absolwentów\n\n")
  
 dane_tab_B1_zaw(pelna_finalna_ramka_wskaznikow, 
-                typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok) %>%
+                typ_szk, ewaluowany_rok_abs, 
+                ewaluowany_kolejny_rok, tylko_tabele) %>%
   gentab_tab_D(ewaluowana_edycja)
 }  
 ```

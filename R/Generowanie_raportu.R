@@ -28,21 +28,34 @@ generuj_raport_docx <- function(pelna_finalna_ramka_wskaznikow, edycja, rok_abs,
     "Szkoła policealna",
     "Szkoła specjalna przysposabiająca do pracy"
   )
-
-  nazwa_pliku = paste0("Raport_Polska_ed",edycja, "_v",wersja,".docx")
+  if (tylko_tabele == FALSE) {
+  nazwa_pliku = paste0("Raport_Polska_ed_",edycja, "_dla_rocznika_",rok_abs, "_v_",wersja,".docx")
+  } else {
+  nazwa_pliku = paste0("Aneks_tabelatyczny_do_Raportu_Polska_ed_",edycja, "_dla_rocznika_",rok_abs, "_v_",wersja,".docx")
+  }
 
   raport_content <- list()
-
-  raport_content[[1]] <- knit_expand(
+  if (tylko_tabele == FALSE) {
+  raport_content[[1]] <- c(knit_expand(
       system.file("/szablony_raportu/wstep.Rmd", package = "LOSYRapDocx"),
       pelna_finalna_ramka_wskaznikow = pelna_finalna_ramka_wskaznikow,
       edycja = edycja,
       rok_abs = rok_abs,
-      rok = if (edycja == rok_abs + 2) {
-        rok = rok_abs
-      } else if (edycja == rok_abs + 1) {
-        rok = rok_abs + 1
-      })
+      rok = rok_abs),
+      knit_expand(
+        system.file("/szablony_raportu/meta.Rmd", package = "LOSYRapDocx"),
+        pelna_finalna_ramka_wskaznikow = pelna_finalna_ramka_wskaznikow,
+        edycja = edycja,
+        rok_abs = rok_abs,
+        rok = rok_abs))
+  } else {
+    raport_content[[1]] <- knit_expand(
+        system.file("/szablony_raportu/meta.Rmd", package = "LOSYRapDocx"),
+        pelna_finalna_ramka_wskaznikow = pelna_finalna_ramka_wskaznikow,
+        edycja = edycja,
+        rok_abs = rok_abs,
+        rok = rok_abs)
+  }
 
   for (i in seq_along(typ_szkoly)) {
     obecny_typ_szk <- typ_szkoly[i]
@@ -54,70 +67,44 @@ generuj_raport_docx <- function(pelna_finalna_ramka_wskaznikow, edycja, rok_abs,
       pelna_finalna_ramka_wskaznikow = pelna_finalna_ramka_wskaznikow,
       edycja = edycja,
       rok_abs = rok_abs,
-      rok = if (edycja == rok_abs + 2) {
-        rok = rok_abs
-      } else if (edycja == rok_abs + 1) {
-        rok = rok_abs + 1
-      }
+      rok = rok_abs
     ),knit_expand(
       system.file('/szablony_raportu/D2.Rmd', package = "LOSYRapDocx"),
       typ_szk = obecny_typ_szk,
       pelna_finalna_ramka_wskaznikow = pelna_finalna_ramka_wskaznikow,
       edycja = edycja,
       rok_abs = rok_abs,
-      rok = if (edycja == rok_abs + 2) {
-        rok = rok_abs
-      } else if (edycja == rok_abs + 1) {
-        rok = rok_abs + 1
-      }
+      rok = rok_abs
     ),knit_expand(
       system.file('/szablony_raportu/D1.Rmd', package = "LOSYRapDocx"),
       typ_szk = obecny_typ_szk,
       pelna_finalna_ramka_wskaznikow = pelna_finalna_ramka_wskaznikow,
       edycja = edycja,
       rok_abs = rok_abs,
-      rok = if (edycja == rok_abs + 2) {
-        rok = rok_abs
-      } else if (edycja == rok_abs + 1) {
-        rok = rok_abs + 1
-      }
+      rok = rok_abs
     ),knit_expand(
       system.file('/szablony_raportu/K1.Rmd', package = "LOSYRapDocx"),
       typ_szk = obecny_typ_szk,
       pelna_finalna_ramka_wskaznikow = pelna_finalna_ramka_wskaznikow,
       edycja = edycja,
       rok_abs = rok_abs,
-      rok = if (edycja == rok_abs + 2) {
-        rok = rok_abs
-      } else if (edycja == rok_abs + 1) {
-        rok = rok_abs + 1
-      }
-    ),
-      knit_expand(
+      rok = rok_abs
+    ),knit_expand(
       system.file('/szablony_raportu/W1.Rmd', package = "LOSYRapDocx"),
       typ_szk = obecny_typ_szk,
       pelna_finalna_ramka_wskaznikow = pelna_finalna_ramka_wskaznikow,
       edycja = edycja,
       rok_abs = rok_abs,
-      rok = if (edycja == rok_abs + 2) {
-        rok = rok_abs
-      } else if (edycja == rok_abs + 1) {
-        rok = rok_abs + 1
-      }
-      ),
-      knit_expand(
+      rok = rok_abs
+    ),knit_expand(
       system.file('/szablony_raportu/B1.Rmd', package = "LOSYRapDocx"),
       typ_szk = obecny_typ_szk,
       pelna_finalna_ramka_wskaznikow = pelna_finalna_ramka_wskaznikow,
       edycja = edycja,
       rok_abs = rok_abs,
-      rok = if (edycja == rok_abs + 2) {
-        rok = rok_abs
-      } else if (edycja == rok_abs + 1) {
-        rok = rok_abs + 1
-      }
-      )
+      rok = rok_abs
     )
+   )
   }
 
   final_raport_text <- paste(unlist(raport_content), collapse = '\n')

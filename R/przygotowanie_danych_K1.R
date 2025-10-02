@@ -49,8 +49,10 @@ dane_wyk_K1_plec <- function(pelna_finalna_ramka_wskaznikow,
                           str_sub(`Kontynuacja nauki`, 2)),
       kontynuacja = factor(.data$kontynuacja, levels = c(
         "W szkole policealnej",
-        "W ramach KKZ",
-        "Na studiach"
+        "Na studiach",
+        "W BS II",
+        "W liceum dla dorosłych",
+        "W ramach KKZ"
       )),
       plec = if_else(plec == "Mężczyzna", "Mężczyźni",
                      if_else(plec == "Kobieta", "Kobiety", "Ogółem")),
@@ -60,7 +62,7 @@ dane_wyk_K1_plec <- function(pelna_finalna_ramka_wskaznikow,
         "Kobiety"
         ))) %>%
     select(plec, kontynuacja, pct)
-
+  dane_wyjsciowe$kontynuacja <- droplevels(dane_wyjsciowe$kontynuacja)
 
   return(dane_wyjsciowe)
 }
@@ -163,6 +165,7 @@ dane_wyk_K1_zaw <- function(pelna_finalna_ramka_wskaznikow,
 
 
   dane_wyjsciowe <- dane_wejsciowe  %>%
+    slice(1:10) %>%
     rename(nazwa_zaw = nazwa_zaw...1, n_SUMA = n_SUMA...4) %>%
     select(nazwa_zaw, n_SUMA, starts_with("pct_")) %>%
     pivot_longer(!c(nazwa_zaw, n_SUMA),
@@ -174,10 +177,13 @@ dane_wyk_K1_zaw <- function(pelna_finalna_ramka_wskaznikow,
                           str_sub(kontynuacja, 2)),
       kontynuacja = factor(.data$kontynuacja, levels = c(
         "W szkole policealnej",
-        "W ramach KKZ",
-        "Na studiach")),
+        "Na studiach",
+        "W BS II",
+        "W liceum dla dorosłych",
+        "W ramach KKZ")),
       nazwa_zaw = reorder(nazwa_zaw, n_SUMA)) %>%
     select(nazwa_zaw, kontynuacja, pct)
+  dane_wyjsciowe$kontynuacja <- droplevels(dane_wyjsciowe$kontynuacja)
 
 
   return(dane_wyjsciowe)
@@ -193,6 +199,10 @@ dane_wyk_K1_zaw <- function(pelna_finalna_ramka_wskaznikow,
 #' @param typ_szk Zmienna tekstowa opisująca typ szkoły.
 #' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
 #' @param rok Liczba całkowita reprezentująca rok do filtrowania.
+#' @param tylko_tabele parametr TRUE/FALSE przekazywany z głównej funkcji
+#'   generującej raport - jeśli FALSE to przycina tabele z zawodami do 10
+#'   najliczniejszych zawodów, jeśli TRUE to raport generuje tabele zawodów bez
+#'   przycinania
 #' @return Ramka danych typu tibble w finalnym formacie do zasilania wykresów.
 #' @importFrom dplyr %>% filter pull select mutate starts_with rename_with
 #' @importFrom dplyr across where rename matches
@@ -201,7 +211,7 @@ dane_wyk_K1_zaw <- function(pelna_finalna_ramka_wskaznikow,
 #' @importFrom tibble tibble
 #' @export
 dane_tab_K1_zaw <- function(pelna_finalna_ramka_wskaznikow,
-                            typ_szk, rok_absolwentow, rok) {
+                            typ_szk, rok_absolwentow, rok, tylko_tabele) {
 
   rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
@@ -223,20 +233,35 @@ dane_tab_K1_zaw <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
-  dane_wyjsciowe <- dane_wejsciowe  %>%
-    rename(Zawód = nazwa_zaw...1, N = n_SUMA...4) %>%
-    mutate(
-      across(where(is.numeric), ~  round(.,digits = 2))
-    ) %>%
-    rename_with(~ str_replace(., "^n_Kontynuacja nauki ",
-                              "liczba_Kontynuacja nauki_"),
-                matches("^n_Kontynuacja nauki ")) %>%
-    rename_with(~ str_replace(., "^pct_Kontynuacja nauki ",
-                              "procent_Kontynuacja nauki_"),
-                matches("^pct_Kontynuacja nauki ")) %>%
-    select(Zawód, N, starts_with("liczba"), starts_with("procent"))
-
-
+  if(tylko_tabele == FALSE) {
+    dane_wyjsciowe <- dane_wejsciowe  %>%
+      slice(1:10) %>%
+      rename(Zawód = nazwa_zaw...1, N = n_SUMA...4) %>%
+      mutate(
+        across(where(is.numeric), ~  round(.,digits = 2))
+      ) %>%
+      rename_with(~ str_replace(., "^n_Kontynuacja nauki ",
+                                "liczba_Kontynuacja nauki_"),
+                  matches("^n_Kontynuacja nauki ")) %>%
+      rename_with(~ str_replace(., "^pct_Kontynuacja nauki ",
+                                "procent_Kontynuacja nauki_"),
+                  matches("^pct_Kontynuacja nauki ")) %>%
+      select(Zawód, N, starts_with("liczba"), starts_with("procent"))
+  } else {
+    dane_wyjsciowe <- dane_wejsciowe  %>%
+      rename(Zawód = nazwa_zaw...1, N = n_SUMA...4) %>%
+      filter(N > 10) %>%
+      mutate(
+        across(where(is.numeric), ~  round(.,digits = 2))
+      ) %>%
+      rename_with(~ str_replace(., "^n_Kontynuacja nauki ",
+                                "liczba_Kontynuacja nauki_"),
+                  matches("^n_Kontynuacja nauki ")) %>%
+      rename_with(~ str_replace(., "^pct_Kontynuacja nauki ",
+                                "procent_Kontynuacja nauki_"),
+                  matches("^pct_Kontynuacja nauki ")) %>%
+      select(Zawód, N, starts_with("liczba"), starts_with("procent"))
+  }
   return(dane_wyjsciowe)
 }
 

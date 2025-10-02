@@ -9,6 +9,10 @@
 #'        zawód(nazwa_zaw).
 #' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
 #' @param rok Liczba całkowita reprezentująca rok do filtrowania.
+#' @param tylko_tabele parametr TRUE/FALSE przekazywany z głównej funkcji
+#'   generującej raport - jeśli FALSE to przycina tabele z zawodami do 10
+#'   najliczniejszych zawodów, jeśli TRUE to raport generuje tabele zawodów bez
+#'   przycinania
 #' @return Ramka danych typu tibble w finalnym formacie do zasilania tabel.
 #' @importFrom dplyr %>% filter pull select mutate across where rename matches
 #' @importFrom dplyr ends_with rename_with
@@ -17,7 +21,8 @@
 #' @importFrom tibble tibble
 #' @export
 dane_tab_W1 <- function(pelna_finalna_ramka_wskaznikow,
-                             typ_szk, kryterium, rok_absolwentow, rok) {
+                        typ_szk, kryterium, rok_absolwentow,
+                        rok, tylko_tabele) {
 
   rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
@@ -51,13 +56,19 @@ dane_tab_W1 <- function(pelna_finalna_ramka_wskaznikow,
            `Przychody w 75 centylu`	= q75,
            `Przychody w 95 centylu` = q95)
 
-    if ({{kryterium}} == "sexf") {
-      dane_wyjsciowe <- dane_wyjsciowe  %>%
+  if ({{kryterium}} == "sexf") {
+    dane_wyjsciowe <- dane_wyjsciowe  %>%
       dplyr::rename(Płeć = sexf)
-    } else if ({{kryterium}} == "nazwa_zaw") {
+  } else if ({{kryterium}} == "nazwa_zaw") {
+    if(tylko_tabele == FALSE) {
       dane_wyjsciowe <- dane_wyjsciowe  %>%
+        slice(1:10) %>%
+        dplyr::rename(Zawód = nazwa_zaw)
+    } else {
+      dane_wyjsciowe <- dane_wyjsciowe %>%
         dplyr::rename(Zawód = nazwa_zaw)
     }
+  }
 
   return(dane_wyjsciowe)
 }

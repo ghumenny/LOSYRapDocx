@@ -129,7 +129,7 @@ dane_tab_S7_plec(pelna_finalna_ramka_wskaznikow,
 ```{r '{{typ_szk}},s6w4'}
 if (tylko_tabele == FALSE && 
     typ_szk %in% szkoly_z_zawodem) {
-cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
+cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na zawody\n\n")
 
 
 (wykresStatusyZawod %+%
@@ -143,12 +143,12 @@ cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany
 
 ```{r '{{typ_szk}},s6t4'}
 if (typ_szk %in% szkoly_z_zawodem)  {
-cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
+cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na zawody\n\n")
 
  
 
 dane_tab_S7_zaw(pelna_finalna_ramka_wskaznikow, 
-                typ_szk, ewaluowany_rok_abs, ewaluowany_rok) %>% 
+                typ_szk, ewaluowany_rok_abs, ewaluowany_rok, tylko_tabele) %>% 
   gentab_tab_S7(ewaluowana_edycja)
 }
 ```
@@ -158,7 +158,7 @@ dane_tab_S7_zaw(pelna_finalna_ramka_wskaznikow,
 if (ewaluowana_edycja == (ewaluowany_rok_abs + 2) &&
     tylko_tabele == FALSE && 
     typ_szk %in% szkoly_z_zawodem) {
-cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
+cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na zawody\n\n")
 
 
 (wykresStatusyZawod %+%
@@ -173,12 +173,12 @@ cat0("Wykres ", wyk_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany
 ```{r '{{typ_szk}},s6t5'}
 if (ewaluowana_edycja == (ewaluowany_rok_abs + 2) &&
     typ_szk %in% szkoly_z_zawodem)  {
-cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na płeć\n\n")
+cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na zawody\n\n")
 
  
 
 dane_tab_S7_zaw(pelna_finalna_ramka_wskaznikow, 
-                typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok) %>% 
+                typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok, tylko_tabele) %>% 
   gentab_tab_S7(ewaluowana_edycja)
 }
 ```

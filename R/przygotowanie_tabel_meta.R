@@ -29,8 +29,8 @@ gentab_typsz_flext_og <- function(dane_do_tabeli, edycja) {
     # Możesz dodać dalsze formatowanie, np. nazwy kolumn
     set_header_labels(
       `Typ szkoły` = "Typy szkół",
-      liczba = paste0("Liczba\n", edycja - 2), # Przykładowo, jeśli rok pochodzi z glowna_edycja - 2
-      procent = paste0("Procent\n", edycja - 2)
+      liczba = "Liczba", # Przykładowo, jeśli rok pochodzi z glowna_edycja - 2
+      procent = "Procent"
     )
 
   return(tabela_flextable)

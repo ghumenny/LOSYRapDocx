@@ -86,7 +86,7 @@ cat0("Wykres ", wyk_num(), ": Uzyskiwanie dyplomów potwierdzających kwalifikac
 if (typ_szk %in% szkoly_z_zawodem) {
 cat0("Tabela ", tab_num(), ": Uzyskiwanie dyplomów potwierdzających kwalifikacje zawodowe", if(typ_szk %in% szkoly_branzowe) {", świadectw czeladniczych"}, " i świadectw potwierdzających kwalifikację w zawodzie - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. - w podziale na zawody o największej liczbie absolwentów\n\n")
 dane_tab_D1_zaw(pelna_finalna_ramka_wskaznikow, 
-                typ_szk, ewaluowany_rok_abs) %>%
+                typ_szk, ewaluowany_rok_abs, tylko_tabele) %>%
   gentab_tab_D(ewaluowana_edycja)
 }
 ```

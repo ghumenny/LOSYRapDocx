@@ -183,8 +183,12 @@ dane_wyk_D1_zaw <- function(pelna_finalna_ramka_wskaznikow,
 #'   aby przygotować je do generowania tabel.
 #' @param pelna_finalna_ramka_wskaznikow Ramka danych zawierająca pełne wyniki wskaźników.
 #'   Oczekuje, że kolumna 'wynik' zawiera zagnieżdżone ramki danych.
-#' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
 #' @param typ_szk Zmienna tekstowa opisująca typ szkoły
+#' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
+#' @param tylko_tabele parametr TRUE/FALSE przekazywany z głównej funkcji
+#'   generującej raport - jeśli FALSE to przycina tabele z zawodami do 10
+#'   najliczniejszych zawodów, jeśli TRUE to raport generuje tabele zawodów bez
+#'   przycinania
 #' @return Ramka danych typu tibble w finalnym formacie do zasilania tabel.
 #' @importFrom dplyr %>% filter pull select mutate across where rename rename_with
 #' @importFrom tidyselect starts_with matches
@@ -192,7 +196,7 @@ dane_wyk_D1_zaw <- function(pelna_finalna_ramka_wskaznikow,
 #' @importFrom stringr str_replace str_to_upper str_sub str_c
 #' @export
 dane_tab_D1_zaw <- function(pelna_finalna_ramka_wskaznikow,
-                            typ_szk, rok_absolwentow) {
+                            typ_szk, rok_absolwentow, tylko_tabele) {
 
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
@@ -212,25 +216,40 @@ dane_tab_D1_zaw <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
-
-  dane_wyjsciowe <- dane_wejsciowe  %>%
-    filter(nazwa_zaw != "OGÓŁEM",
-           n_SUMA >= 10) %>%
-    #slice(1:10) %>%
-    select(nazwa_zaw, n_SUMA, starts_with("pct_"), -pct_SUMA) %>%
-    select(where(~ is.factor(.x) || sum(.x) !=0)) %>%
-    mutate(
-      across(where(is.numeric), ~  round(.,digits = 2))) %>%
-    rename(Zawód = nazwa_zaw,
-           N = n_SUMA)  %>%
-    rename_with(
-      ~ str_c("pct_",
-        str_to_upper(str_sub(., start = 5, end = 5)),
-        str_sub(., start = 6, end = -1)
-      ), .cols = starts_with("pct_")
-    ) %>%
-    rename_with(~ str_replace(., "^pct_", "procent_"), matches("^pct_"))
-
-
+  if(tylko_tabele == FALSE) {
+    dane_wyjsciowe <- dane_wejsciowe  %>%
+      filter(nazwa_zaw != "OGÓŁEM") %>%
+      slice(1:10) %>%
+      select(nazwa_zaw, n_SUMA, starts_with("pct_"), -pct_SUMA) %>%
+      select(where(~ is.factor(.x) || sum(.x) !=0)) %>%
+      mutate(
+        across(where(is.numeric), ~  round(.,digits = 2))) %>%
+      rename(Zawód = nazwa_zaw,
+             N = n_SUMA)  %>%
+      rename_with(
+        ~ str_c("pct_",
+                str_to_upper(str_sub(., start = 5, end = 5)),
+                str_sub(., start = 6, end = -1)
+        ), .cols = starts_with("pct_")
+      ) %>%
+      rename_with(~ str_replace(., "^pct_", "procent_"), matches("^pct_"))
+  } else {
+    dane_wyjsciowe <- dane_wejsciowe  %>%
+      filter(nazwa_zaw != "OGÓŁEM",
+             n_SUMA >= 10) %>%
+      select(nazwa_zaw, n_SUMA, starts_with("pct_"), -pct_SUMA) %>%
+      select(where(~ is.factor(.x) || sum(.x) !=0)) %>%
+      mutate(
+        across(where(is.numeric), ~  round(.,digits = 2))) %>%
+      rename(Zawód = nazwa_zaw,
+             N = n_SUMA)  %>%
+      rename_with(
+        ~ str_c("pct_",
+                str_to_upper(str_sub(., start = 5, end = 5)),
+                str_sub(., start = 6, end = -1)
+        ), .cols = starts_with("pct_")
+      ) %>%
+      rename_with(~ str_replace(., "^pct_", "procent_"), matches("^pct_"))
+  }
   return(dane_wyjsciowe)
 }

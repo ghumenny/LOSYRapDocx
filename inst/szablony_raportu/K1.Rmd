@@ -105,13 +105,15 @@ if (typ_szk %in% szkoly_z_zawodem) {
 cat0("Tabela ", tab_num(), ": Kontynuowanie nauki w grudniu ", ewaluowany_rok," r. - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. - w podziale na zawody o największej liczbie absolwentów\n\n")
 
 dane_tab_K1_zaw(pelna_finalna_ramka_wskaznikow, 
-                typ_szk, ewaluowany_rok_abs, ewaluowany_rok) %>%
+                typ_szk, ewaluowany_rok_abs, 
+                ewaluowany_rok, tylko_tabele) %>%
   gentab_tab_D(ewaluowana_edycja)
 }  
 ```
 
 ```{r  '{{typ_szk}},k1w4'}
-if (typ_szk %in% szkoly_z_zawodem &&
+if (ewaluowana_edycja == (ewaluowany_rok_abs + 2) &&
+    typ_szk %in% szkoly_z_zawodem &&
     tylko_tabele == FALSE) {
 cat0("Wykres ", wyk_num(), ": Kontynuowanie nauki w grudniu ", ewaluowany_kolejny_rok," r. - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. - w podziale na zawody o największej liczbie absolwentów\n\n")
 
@@ -125,11 +127,13 @@ cat0("Wykres ", wyk_num(), ": Kontynuowanie nauki w grudniu ", ewaluowany_kolejn
 ```
 
 ```{r '{{typ_szk}},k1t4'}
-if (typ_szk %in% szkoly_z_zawodem) {
+if (ewaluowana_edycja == (ewaluowany_rok_abs + 2) &&
+    typ_szk %in% szkoly_z_zawodem) {
 cat0("Tabela ", tab_num(), ": Kontynuowanie nauki w grudniu ", ewaluowany_kolejny_rok," r. - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. - w podziale na zawody o największej liczbie absolwentów\n\n")
 
 dane_tab_K1_zaw(pelna_finalna_ramka_wskaznikow, 
-                typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok) %>%
+                typ_szk, ewaluowany_rok_abs, 
+                ewaluowany_kolejny_rok, tylko_tabele) %>%
   gentab_tab_D(ewaluowana_edycja)
 }
 ```
@@ -165,7 +169,7 @@ dane_tab_K2dzi_plec(pelna_finalna_ramka_wskaznikow,
 if (typ_szk %in% szkoly_z_zawodem_pod_studia) {
     cat0("Tabela ", tab_num(), ": Dziedziny nauki, w których w grudniu ", ewaluowany_rok," r. - absolwenci ", dopelniacz(typ_szk)," z ", ewaluowany_rok_abs, " r. podjęli studia - w podziale na zawody\n\n")
 dane_tab_K2dzi_zaw(pelna_finalna_ramka_wskaznikow, 
-                   typ_szk, ewaluowany_rok_abs) %>%
+                   typ_szk, ewaluowany_rok_abs, tylko_tabele) %>%
   gentab_tab_D(ewaluowana_edycja)
 }
 ```

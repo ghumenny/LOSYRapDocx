@@ -91,7 +91,7 @@ if (typ_szk %in% c("Technikum", "Branżowa szkoła II stopnia")) {
   cat0("Tabela ", tab_num(), ": Uzyskiwanie świadectwa dojrzałości - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na zawody o największej liczbie absolwentów\n\n")
   
 dane_tab_D2_zaw(pelna_finalna_ramka_wskaznikow, 
-                 typ_szk, ewaluowany_rok_abs) %>% 
+                 typ_szk, ewaluowany_rok_abs, tylko_tabele) %>% 
   gentab_tab_D(ewaluowana_edycja)
 }
 ```

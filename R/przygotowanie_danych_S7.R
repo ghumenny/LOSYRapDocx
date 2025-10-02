@@ -306,12 +306,16 @@ dane_wyk_S7_zaw <- function(pelna_finalna_ramka_wskaznikow,
 #' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
 #' @param typ_szk Zmienna tekstowa opisująca typ szkoły
 #' @param rok Liczba całkowita reprezentująca rok do filtrowania.
+#' @param tylko_tabele parametr TRUE/FALSE przekazywany z głównej funkcji
+#'   generującej raport - jeśli FALSE to przycina tabele z zawodami do 10
+#'   najliczniejszych zawodów, jeśli TRUE to raport generuje tabele zawodów bez
+#'   przycinania
 #' @return Ramka danych typu tibble w finalnym formacie do zasilania wykresów.
 #' @importFrom dplyr %>% filter pull select mutate across where rename matches rename_with
 #' @importFrom rlang .data
 #' @export
 dane_tab_S7_zaw <- function(pelna_finalna_ramka_wskaznikow,
-                            typ_szk, rok_absolwentow, rok) {
+                            typ_szk, rok_absolwentow, rok, tylko_tabele) {
   rok_kal <- rok
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
@@ -332,7 +336,7 @@ dane_tab_S7_zaw <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
-
+if(tylko_tabele == FALSE) {
   dane_wyjsciowe <- dane_wejsciowe  %>%
     filter(nazwa_zaw != "OGÓŁEM") %>%
     slice(1:10) %>%
@@ -342,7 +346,17 @@ dane_tab_S7_zaw <- function(pelna_finalna_ramka_wskaznikow,
     rename(Zawód = nazwa_zaw,
            N = n_SUMA) %>%
     rename_with(~ str_replace(., "^pct_", "procent_"), matches("^pct_"))
-
+} else {
+  dane_wyjsciowe <- dane_wejsciowe  %>%
+    filter(nazwa_zaw != "OGÓŁEM",
+           n_SUMA > 10) %>%
+    select(nazwa_zaw, n_SUMA, starts_with("pct_"), -pct_SUMA) %>%
+    mutate(
+      across(where(is.numeric), ~  round(.,digits = 2))) %>%
+    rename(Zawód = nazwa_zaw,
+           N = n_SUMA) %>%
+    rename_with(~ str_replace(., "^pct_", "procent_"), matches("^pct_"))
+}
 
   return(dane_wyjsciowe)
 }
@@ -390,8 +404,8 @@ dane_tab_S7_pow <- function(pelna_finalna_ramka_wskaznikow,
     select(teryt_pow_szk, n_SUMA, starts_with("pct_"), -pct_SUMA) %>%
     mutate(
       across(where(is.numeric), ~  round(.,digits = 2)),
-      teryt_pow = as.character(as.numeric(as.character(teryt_pow_szk)) / 100)) %>%
-    left_join(teryt_mapowanie, by = "teryt_pow") %>%
+      teryt_pow = teryt_pow_szk) %>%
+    left_join(LOSYRapDocx:::teryt_mapowanie, by = "teryt_pow") %>%
     rename(`Teryt powiatu` = teryt_pow_szk,
            N = n_SUMA) %>%
     rename_with(~ str_replace(., "^pct_", "procent_"), matches("^pct_")) %>%

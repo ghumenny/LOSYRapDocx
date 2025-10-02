@@ -133,7 +133,12 @@ dane_tab_K2dzi_plec <- function(pelna_finalna_ramka_wskaznikow,
 #' @param pelna_finalna_ramka_wskaznikow Ramka danych zawierająca pełne wyniki wskaźników.
 #'   Oczekuje, że kolumna 'wynik' zawiera zagnieżdżone ramki danych.
 #' @param typ_szk Zmienna tekstowa opisująca typ szkoły.
-#' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów do filtrowania.
+#' @param rok_absolwentow Liczba całkowita reprezentująca rok absolwentów
+#' do filtrowania.
+#' @param tylko_tabele parametr TRUE/FALSE przekazywany z głównej funkcji
+#'   generującej raport - jeśli FALSE to przycina tabele z zawodami do 10
+#'   najliczniejszych zawodów, jeśli TRUE to raport generuje tabele zawodów bez
+#'   przycinania
 #' @return Ramka danych typu tibble w finalnym formacie do zasilania wykresów.
 #' @importFrom dplyr %>% filter pull select mutate starts_with if_else
 #' @importFrom rlang .data
@@ -142,7 +147,7 @@ dane_tab_K2dzi_plec <- function(pelna_finalna_ramka_wskaznikow,
 #' @importFrom tibble tibble
 #' @export
 dane_tab_K2dzi_zaw <- function(pelna_finalna_ramka_wskaznikow,
-                                typ_szk, rok_absolwentow) {
+                                typ_szk, rok_absolwentow, tylko_tabele) {
 
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
@@ -163,16 +168,25 @@ dane_tab_K2dzi_zaw <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
-
-  dane_wyjsciowe <- dane_wejsciowe  %>%
-    arrange(desc(liczba)) %>%
-    slice(2:11) %>%
-    select(nazwa_zaw, liczba, starts_with("procent_"))%>%
-    mutate(
-      across(where(is.numeric), ~  round(.,digits = 2))) %>%
-    rename(Zawód = nazwa_zaw) %>%
-    rename_with(~ str_replace(., "^procent_", "Procent w dziedzinie_"), matches("^procent_"))
-
+  if(tylko_tabele == FALSE) {
+    dane_wyjsciowe <- dane_wejsciowe  %>%
+      arrange(desc(liczba)) %>%
+      slice(2:11) %>%
+      select(nazwa_zaw, liczba, starts_with("procent_"))%>%
+      mutate(
+        across(where(is.numeric), ~  round(.,digits = 2))) %>%
+      rename(Zawód = nazwa_zaw) %>%
+      rename_with(~ str_replace(., "^procent_", "Procent w dziedzinie_"), matches("^procent_"))
+  } else {
+    dane_wyjsciowe <- dane_wejsciowe  %>%
+      arrange(desc(liczba)) %>%
+      filter(liczba > 10) %>%
+      select(nazwa_zaw, liczba, starts_with("procent_"))%>%
+      mutate(
+        across(where(is.numeric), ~  round(.,digits = 2))) %>%
+      rename(Zawód = nazwa_zaw) %>%
+      rename_with(~ str_replace(., "^procent_", "Procent w dziedzinie_"), matches("^procent_"))
+  }
   return(dane_wyjsciowe)
 }
 
