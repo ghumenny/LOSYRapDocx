@@ -47,7 +47,7 @@ Głównym wyzwaniem przy tworzeniu systemu było określenie sposobów przekazyw
 
 ## Wykorzystane dane 
 
-Raport przygotowywano na podstawie danych pozyskanych w 2024 r. przez CIE z publicznych rejestrów. Dane te były przetwarzane, łączone i anonimizowane przez CIE. Za analizę danych i opracowanie ich wyników, w tym za sporządzane automatycznie raporty przekazywane szkołom, automatyczne raporty regionalne oraz automatyczne raporty wojewódzko-branżowe odpowiadało IBE. 
+Raport przygotowywano na podstawie danych pozyskanych w `r ewaluowana_edycja` r. przez CIE z publicznych rejestrów. Dane te były przetwarzane, łączone i anonimizowane przez CIE. Za analizę danych i opracowanie ich wyników, w tym za sporządzane automatycznie raporty przekazywane szkołom, automatyczne raporty regionalne oraz automatyczne raporty wojewódzko-branżowe odpowiadało IBE. 
 Monitoring opiera się na danych dotyczących nauki w systemie oświaty (dane pochodzące z Systemu Informacji Oświatowej - SIO), uzyskiwania dyplomów i świadectw/certyfikatów (dane Okręgowych Komisji Egzaminacyjnych -- OKE oraz dane SIO), kontynuacji nauki na studiach (dane pochodzące z systemu POL-on) oraz aktywności na rynku pracy (dane Zakładu Ubezpieczeń Społecznych - ZUS). Ponieważ informacje konieczne do opisania w zadowalający sposób karier edukacyjnych i zawodowych absolwentów pochodzą z różnych źródeł, do połączenia tych informacji konieczne jest wykorzystanie identyfikatora pozwalającego jednoznacznie zidentyfikować tę samą osobę (absolwenta) w każdym ze źródeł danych. Rolę takiego identyfikatora spełnia numer PESEL[^3], który po połączeniu danych zostaje bezpowrotnie usunięty ze zbioru danych. W poniższej tabeli krótko omówiono zakres informacji pozyskanych z poszczególnych rejestrów.
 
 [^1]: Zgodnie z art. 6 ust.
@@ -115,9 +115,9 @@ Monitorowanie karier absolwentów  polega na ustalaniu, jaką wartość mają ws
 
 Informacje o absolwentach pozyskano z Systemu Informacji Oświatowej według stanu bazy na 15 marca 2024 roku. Absolwentami są uczniowie ostatnich klas, którym w SIO zakończono przypisanie do oddziału wybierając status „Ukończył szkołę”.
 
-**Absolwenci 2022**
+**Absolwenci `r ewaluowany_rok_abs`**
 
-Osoby, którym w Systemie Informacji Oświatowej przypisano status absolwenta w 2022 r.
+Osoby, którym w Systemie Informacji Oświatowej przypisano status absolwenta w `r ewaluowany_rok_abs` r.
 
 **Młodociany**
 
@@ -134,7 +134,7 @@ Informacje przekazywane przez ZUS pozwalają na ustalenie aktywności na rynku p
 W rejestrze ZUS znajdują się również absolwenci zgłoszeni do ubezpieczenia zdrowotnego przez rodziców[^5] lub szkołę/uczelnię, w której kontynuują naukę.
 Z systemu ZUS korzysta zdecydowana większość osób ubezpieczonych.
 Informacje z SIO i POL-on pozwalają stwierdzić fakt kontynuacji nauki - na studiach bądź w szkole należącej do systemu oświaty.
-Wskaźnik jest prezentowany dla kolejnych miesięcy od lipca 2022 (roku ukończenia szkoły) do marca 2024 r. (roku prowadzenia monitoringu).
+Wskaźnik jest prezentowany dla kolejnych miesięcy od lipca `r ewaluowany_rok_abs` (roku ukończenia szkoły) do marca `r ewaluowana_edycja` r. (roku prowadzenia monitoringu).
 Każdy z absolwentów w każdym z analizowanych miesięcy może zostać przypisany do jednej z 5 kategorii wyróżnionych przy konstruowaniu wskaźnika (por. Tabela 2).
 Dane dotyczące statusu edukacyjno-zawodowego w danym miesiącu są agregowane na podstawie szczegółowych informacji na temat pracy lub nauki w poszczególnych okresach.
 Ustalenie statusu pracy w danym miesiącu wymaga przepracowania minimum jednego dnia w tymże miesiącu.
@@ -195,7 +195,7 @@ Brak informacji o wymiarze etatu stanowi obciążenie dla prezentowanych wynikó
 Zestawiając przychody z pracy uzyskiwane przez różne grupy respondentów (wyodrębnione na przykład ze względu na płeć) należy więc pamiętać, że prezentowane wartości nie uwzględniają czasu poświęcanego na wykonywanie pracy zarobkowej - dysproporcje nie świadczą zatem bezpośrednio o nierównościach płacowych.
 Wskaźniki dotyczą nominalnych wartości przychodów uzyskiwanych z pracy, co oznacza, że nie uwzględniają zmian siły nabywczej złotówki. Porównując przychody z pracy z różnych okresów także użyto wartości nominalnych.
 
-Prezentowane szacunki dotyczą średnich przychodów uzyskiwanych miesięcznie przez absolwentów ze wszystkich prac wykonywanych w ostatnim kwartale roku, w którym ukończyli szkołę, w całym 2023 r. i w pierwszym kwartale 2024 r. 
+Prezentowane szacunki dotyczą średnich przychodów uzyskiwanych miesięcznie przez absolwentów ze wszystkich prac wykonywanych w ostatnim kwartale roku, w którym ukończyli szkołę`r if(ewaluowany_rok_abs + 2 == ewaluowana_edycja) {paste0(", w całym ", ewaluowany_rok_abs + 1, " r. ")}`i w pierwszym kwartale `r ewaluowana_edycja` r. 
 Dla danego okresu, dla każdego absolwenta wyliczono średni miesięczny przychód ze wszystkich źródeł rejestrowanych przez ZUS z miesięcy, w których taki przychód uzyskiwał. 
 Należy podkreślić, że wyliczane w ten sposób średniomiesięczne wskaźniki uwzględniają przychody z pracy wykonywanej przez dowolną część danego miesiąca.
 W sytuacji, gdy absolwent przepracował np.
@@ -219,7 +219,7 @@ Wskaźnik otrzymywania świadectwa dojrzałości został obliczony z wykorzystan
 Jest analizowany w odniesieniu do absolwentów liceów ogólnokształcących i techników, które przygotowują swoich uczniów do przystąpienia do egzaminu maturalnego.
 Z rejestru CKE pozyskano informację o absolwentach, którzy uzyskali świadectwo dojrzałości.
 Nie pozyskiwano natomiast informacji o przystępowaniu przez absolwentów do egzaminu maturalnego ani o uzyskaniu przez nich wyniku negatywnego.
-Wskaźnik dla absolwentów z 2022 r. uwzględnia osoby uzyskujące świadectwo dojrzałości w sesji poprawkowej 2022 r. oraz głównej 2023 r.
+`r if(ewaluowany_rok_abs + 2 == ewaluowana_edycja) {paste0("Wskaźnik dla absolwentów z ",ewaluowany_rok_abs," r. uwzględnia osoby uzyskujące świadectwo dojrzałości w sesji poprawkowej ",ewaluowany_rok_abs," r. oraz głównej ", ewaluowany_rok_abs + 1, " r.")}`
 Ważne, aby pamiętać, że wskaźnik jest wyliczany w odniesieniu do wszystkich osób, które uzyskały status absolwentów szkoły objętej monitoringiem tzn. uzyskały świadectwo ukończenia szkoły.
 Z kolei publikowane przez Centralną Komisję Egzaminacyjną wskaźniki zdawalności są obliczane jako odsetek osób, które zdały egzamin maturalny wśród tych, które po raz pierwszy przystąpiły do wszystkich części egzaminu w danej sesji.
 Do egzaminu nie przystępują wszyscy absolwenci z danego roku.
@@ -236,7 +236,7 @@ Dzięki wszystkim tym danym przygotowano wskaźniki informujące o tym, jaka cz�
 Warto przy tym zwrócić uwagę, że w zależności od zawodu zdobycie dyplomu wiąże się z koniecznością posiadania różnej liczby świadectw/certyfikatów oraz odpowiedniego poziomu wykształcenia.
 W rozpatrywanym okresie, aby uzyskać dyplom trzeba było potwierdzić od jednej do dwóch kwalifikacji.
 Przy czym zawody jednokwalifikacyjne były nauczane głównie w branżowych szkołach I stopnia.
-Z kolei zawody dwukwalifikacyjne najczęściej nauczane były w technikach[^12]. Jest to o tyle ważne, że jeżeli na zawód składa się więcej kwalifikacji, to można być absolwentem z częścią świadectw/certyfikatów, jednak bez dyplomu. Takie sytuacje częściej będą się pojawiać w technikach i szkołach policealnych. Absolwenci techników  z 2022 r. mogli zdawać egzaminy tylko w formule z 2017 r. Natomiast absolwenci branżowych szkół I stopnia z 2022 r. zarówno w formule z 2017r. jak i w formule z 2019 r., to jest w oparciu o podstawy programowe z 2017 r. i z 2019 r. (w 2022 r. naukę w branżowych szkołach I stopnia ukończyły dwa roczniki absolwentów, zarówno ci którzy wcześniej ukończyli gimnazjum jak i ci, którzy ukończyli ośmioletnią szkołę podstawową). Z kolei absolwenci szkół policealnych z 2022 r. mogli przystępować tylko do egzaminu w formule z  2019 r. Informacje te przedstawia Tabela 3. Uczniowie i słuchacze realizujący podstawy programowe z 2017 r. nie mieli obowiązku przystępowania do egzaminów potwierdzających kwalifikacje w zawodzie - taki obowiązek wprowadzono dla osób realizujących podstawy programowe z 2019 r.
+Z kolei zawody dwukwalifikacyjne najczęściej nauczane były w technikach[^12]. Jest to o tyle ważne, że jeżeli na zawód składa się więcej kwalifikacji, to można być absolwentem z częścią świadectw/certyfikatów, jednak bez dyplomu. Takie sytuacje częściej będą się pojawiać w technikach i szkołach policealnych. Informacje o podstawie programowej, w oparciu o którą kształcili się absolwenci poszczególnych typów szkół z `r ewaluowany_rok_abs` roku , przedstawia Tabela 3. Uczniowie i słuchacze realizujący podstawy programowe z 2017 r. nie mieli obowiązku przystępowania do egzaminów potwierdzających kwalifikacje w zawodzie - taki obowiązek wprowadzono dla osób realizujących podstawy programowe z 2019 r.
 
 [^11]: Będące elementami składowymi dyplomów - dopiero zdobycie kompletu kwalifikacji przewidzianych dla danego zawodu oraz uzyskania odpowiedniego poziomu wykształcenia pozwala na uzyskanie dyplomu.
 
@@ -263,7 +263,8 @@ tabelka3 <- tibble(
                  "podst. prog. 2012 lub 2017"))) %>% 
    flextable() %>% separate_header() %>% 
     theme_booktabs() %>%
-    set_table_properties(width = 1, layout = "autofit") %>%    
+    set_table_properties(width = 1, layout = "autofit") |> 
+  colformat_num(big.mark = "") %>%    
     align(part = "all", j = 2:4, align = "center") %>% 
    border_inner_h(part="all")
 tabelka3

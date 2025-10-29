@@ -9,7 +9,8 @@ dane_tab_W1(
   typ_szk,
   kryterium,
   rok_absolwentow,
-  rok
+  rok,
+  tylko_tabele
 )
 }
 \arguments{
@@ -24,6 +25,11 @@ zawód(nazwa_zaw).}
 \item{rok_absolwentow}{Liczba całkowita reprezentująca rok absolwentów do filtrowania.}
 
 \item{rok}{Liczba całkowita reprezentująca rok do filtrowania.}
+
+\item{tylko_tabele}{parametr TRUE/FALSE przekazywany z głównej funkcji
+generującej raport - jeśli FALSE to przycina tabele z zawodami do 10
+najliczniejszych zawodów, jeśli TRUE to raport generuje tabele zawodów bez
+przycinania}
 }
 \value{
 Ramka danych typu tibble w finalnym formacie do zasilania tabel.

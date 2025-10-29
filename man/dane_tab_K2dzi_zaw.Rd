@@ -4,7 +4,12 @@
 \alias{dane_tab_K2dzi_zaw}
 \title{Przygotowanie danych do wykresu kontynuacji nauki (płeć)}
 \usage{
-dane_tab_K2dzi_zaw(pelna_finalna_ramka_wskaznikow, typ_szk, rok_absolwentow)
+dane_tab_K2dzi_zaw(
+  pelna_finalna_ramka_wskaznikow,
+  typ_szk,
+  rok_absolwentow,
+  tylko_tabele
+)
 }
 \arguments{
 \item{pelna_finalna_ramka_wskaznikow}{Ramka danych zawierająca pełne wyniki wskaźników.
@@ -12,7 +17,13 @@ Oczekuje, że kolumna 'wynik' zawiera zagnieżdżone ramki danych.}
 
 \item{typ_szk}{Zmienna tekstowa opisująca typ szkoły.}
 
-\item{rok_absolwentow}{Liczba całkowita reprezentująca rok absolwentów do filtrowania.}
+\item{rok_absolwentow}{Liczba całkowita reprezentująca rok absolwentów
+do filtrowania.}
+
+\item{tylko_tabele}{parametr TRUE/FALSE przekazywany z głównej funkcji
+generującej raport - jeśli FALSE to przycina tabele z zawodami do 10
+najliczniejszych zawodów, jeśli TRUE to raport generuje tabele zawodów bez
+przycinania}
 }
 \value{
 Ramka danych typu tibble w finalnym formacie do zasilania wykresów.

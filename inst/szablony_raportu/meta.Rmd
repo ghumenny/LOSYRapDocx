@@ -45,13 +45,13 @@ tabelka
 if (tylko_tabele == FALSE) {
 cat0("Wykres ", wyk_num(), ": Struktura populacji absolwentów objętych monitoringiem według typów szkół\n")
 
-wykresik <- (wykresTypySzkol %+% 
+(wykresTypySzkol %+% 
     dane_wyk_meta_typsz_og(pelna_finalna_ramka_wskaznikow, 
                            ewaluowany_rok_abs)) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 16) |> # zmiana wielkości czcionki
   zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
-  zmien_rok_w_podpisie(ewaluowana_edycja) # zmiana roku w podpisie
-print(wykresik)
+  zmien_rok_w_podpisie(ewaluowana_edycja) %>%  # zmiana roku w podpisie
+    print()
 }
 
 ```

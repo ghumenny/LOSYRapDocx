@@ -47,7 +47,7 @@ cat0("Wykres ", wyk_num(), ": Poziom bezrobocia (odsetek zarejestrowanych) w pos
     dane_wyk_B1_mscrok(pelna_finalna_ramka_wskaznikow, 
                        typ_szk, ewaluowany_rok_abs)) |> # podmiana danych
   zmien_wielkosc_czcionek(baseSize = 14) |> # zmiana wielkości czcionki
-  zmien_prog_pokazywania_etykiet(hideBelow = 0.04) |> # zmiana progu ukrywania etykiet
+  zmien_prog_pokazywania_etykiet(hideBelow = 0.005) |> # zmiana progu ukrywania etykiet
   zmien_rok_w_podpisie(ewaluowana_edycja)
 }
 ```

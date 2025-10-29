@@ -18,8 +18,8 @@ generuj_raport_docx <- function(pelna_finalna_ramka_wskaznikow, edycja, rok_abs,
                                wersja, tylko_tabele = FALSE) {
 
   typ_szkoly <- c(
-    "Liceum ogólnokształcące",
-    "Liceum dla dorosłych",
+    "Liceum ogólnokształcące dla młodzieży",
+    "Liceum ogólnokształcące dla dorosłych",
     "Branżowa szkoła I stopnia",
     "Młodociani w Branżowej szkole I stopnia",
     "Niemłodociani w Branżowej szkole I stopnia",

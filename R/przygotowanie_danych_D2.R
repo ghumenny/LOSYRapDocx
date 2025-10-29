@@ -46,6 +46,9 @@ dane_wyk_D2_plec <- function(pelna_finalna_ramka_wskaznikow,
         D2 == "Uzyskał świadectwo maturalne" ~ "Uzyskanie świadectwa dojrzałości",
         D2 == "Brak świadectwa maturalnego" ~ "Brak świadectwa dojrzałości",
         TRUE ~ D2),
+      dyplom = factor(.data$dyplom, levels = c(
+        "Uzyskanie świadectwa dojrzałości",
+        "Brak świadectwa dojrzałości")),
       plec = if_else(plec == "Mężczyzna", "Mężczyźni",
                      if_else(plec == "Kobieta", "Kobiety", "ogółem"))) %>%
     select(plec, dyplom, pct)

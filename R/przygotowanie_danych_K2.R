@@ -118,7 +118,8 @@ dane_tab_K2dzi_plec <- function(pelna_finalna_ramka_wskaznikow,
                 names_sep = "_") %>%
     mutate(
       across(where(is.numeric), ~  round(.,digits = 2)),
-      Dziedzina = if_else(!is.na(Dziedzina), Dziedzina, "ogółem"))
+      Dziedzina = if_else(!is.na(Dziedzina), Dziedzina, "ogółem")) |>
+    arrange(desc(Ogółem_liczba))
 
 
   return(dane_wyjsciowe)

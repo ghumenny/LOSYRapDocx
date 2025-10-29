@@ -52,8 +52,8 @@ dane_tab_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, rok_absolwent
     bind_rows(branzowa_ogolem) %>%
      mutate(
       `Typ szkoły` = factor(.data$typ_szk2, levels = c(
-        "Liceum ogólnokształcące",
-        "Liceum dla dorosłych",
+        "Liceum ogólnokształcące dla młodzieży",
+        "Liceum ogólnokształcące dla dorosłych",
         "Technikum",
         "Branżowa szkoła II stopnia",
         "Szkoła policealna",
@@ -65,7 +65,8 @@ dane_tab_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, rok_absolwent
       liczba = round(.data$n_SUMA),
       procent = round(.data$pct_OGÓŁEM, 2)
     ) %>%
-    select(-typ_szk2, -n_SUMA, -pct_OGÓŁEM) %>%
+    select(-typ_szk2, -n_SUMA, -pct_OGÓŁEM)  %>%
+    filter(!is.na(`Typ szkoły`)) %>%
     arrange(`Typ szkoły`)
 
   return(finalna_tabela)
@@ -85,12 +86,12 @@ dane_tab_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, rok_absolwent
 #' @export
 dane_wyk_meta_typsz_og <- function(pelna_finalna_ramka_wskaznikow, rok_absolwentow) {
 
-rok_abs <- rok_absolwentow
+
   dane_wejsciowe <- pelna_finalna_ramka_wskaznikow %>%
     filter(
       .data$WOJ_NAZWA == "Polska",
       .data$wskaznik == "typ_szk2",
-      .data$rok_abs == rok_abs
+      .data$rok_abs == rok_absolwentow
     ) %>%
     pull(.data$wynik) %>% `[[`(1)
 
@@ -124,8 +125,8 @@ rok_abs <- rok_absolwentow
     mutate(
       rok_abs = rok_absolwentow,
       typ_szk = factor(.data$typ_szk2, levels = c(
-        "Liceum ogólnokształcące",
-        "Liceum dla dorosłych",
+        "Liceum ogólnokształcące dla młodzieży",
+        "Liceum ogólnokształcące dla dorosłych",
         "Technikum",
         "Branżowa szkoła II stopnia",
         "Szkoła policealna",
@@ -134,8 +135,8 @@ rok_abs <- rok_absolwentow
       )),
       pct = .data$pct_OGÓŁEM / 100 # Konwersja procentu na odsetek
     ) %>%
-    select(rok_abs, typ_szk, pct)
-
+    select(rok_abs, typ_szk, pct) %>%
+    filter(!is.na(typ_szk))
 
   return(dane_wyjsciowe)
 }
@@ -186,8 +187,8 @@ dane_tab_meta_typsz_plec <- function(pelna_finalna_ramka_wskaznikow, rok_absolwe
       typ_szk2 = "Branżowa szkoła I stopnia - ogółem",
       n_Mężczyzna = sum(.data$n_Mężczyzna),
       n_Kobieta = sum(.data$n_Kobieta),
-      pct_Mężczyzna = sum(.data$pct_Mężczyzna),
-      pct_Kobieta = sum(.data$pct_Kobieta)
+      pct_Mężczyzna = sum(.data$n_Mężczyzna)/(sum(.data$n_Mężczyzna)+sum(.data$n_Kobieta))*100,
+      pct_Kobieta = sum(.data$n_Kobieta)/(sum(.data$n_Mężczyzna)+sum(.data$n_Kobieta))*100
     )
 
   # Łączenie danych
@@ -195,8 +196,8 @@ dane_tab_meta_typsz_plec <- function(pelna_finalna_ramka_wskaznikow, rok_absolwe
     bind_rows(branzowa_ogolem) %>%
     mutate(
       `Typ szkoły` = factor(.data$typ_szk2, levels = c(
-        "Liceum ogólnokształcące",
-        "Liceum dla dorosłych",
+        "Liceum ogólnokształcące dla młodzieży",
+        "Liceum ogólnokształcące dla dorosłych",
         "Technikum",
         "Branżowa szkoła II stopnia",
         "Szkoła policealna",
@@ -211,6 +212,7 @@ dane_tab_meta_typsz_plec <- function(pelna_finalna_ramka_wskaznikow, rok_absolwe
       procent_Kobieta = round(.data$pct_Kobieta, 2)
     ) %>%
     select(-typ_szk2, -n_Mężczyzna, -n_Kobieta, -pct_Mężczyzna, -pct_Kobieta) %>%
+    filter(!is.na(`Typ szkoły`))  %>%
     arrange(`Typ szkoły`)
 
   return(finalna_tabela)
@@ -271,20 +273,21 @@ dane_wyk_meta_typsz_plec <- function(pelna_finalna_ramka_wskaznikow, rok_absolwe
   dane_wyjsciowe <- bind_rows(pozostale_dane, branzowa_ogolem) %>%
     mutate(
       typ_szk = factor(.data$typ_szk2, levels = c(
-        "Liceum ogólnokształcące",
-        "Liceum dla dorosłych",
-        "Technikum",
-        "Branżowa szkoła II stopnia",
-        "Szkoła policealna",
+        "Szkoła specjalna przysposabiająca do pracy",
         "Branżowa szkoła I stopnia",
-        "Szkoła specjalna przysposabiająca do pracy"
+        "Szkoła policealna",
+        "Branżowa szkoła II stopnia",
+        "Technikum",
+        "Liceum ogólnokształcące dla dorosłych",
+        "Liceum ogólnokształcące dla młodzieży"
       ))) %>%
     select(typ_szk, starts_with("pct_")) %>%
     pivot_longer(!typ_szk, names_to = "plec", values_to = "pct",
                  names_prefix = "pct_") %>%
     mutate(pct = .data$pct / 100,
            plec = if_else(plec == "Mężczyzna", "Mężczyźni", "Kobiety")
-    )
+    ) %>%
+    filter(!is.na(typ_szk))
 
 
   return(dane_wyjsciowe)

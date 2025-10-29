@@ -4,7 +4,13 @@
 \alias{dane_tab_K1_zaw}
 \title{Przygotowanie danych do wykresu statusów (płeć)}
 \usage{
-dane_tab_K1_zaw(pelna_finalna_ramka_wskaznikow, typ_szk, rok_absolwentow, rok)
+dane_tab_K1_zaw(
+  pelna_finalna_ramka_wskaznikow,
+  typ_szk,
+  rok_absolwentow,
+  rok,
+  tylko_tabele
+)
 }
 \arguments{
 \item{pelna_finalna_ramka_wskaznikow}{Ramka danych zawierająca pełne wyniki wskaźników.
@@ -15,6 +21,11 @@ Oczekuje, że kolumna 'wynik' zawiera zagnieżdżone ramki danych.}
 \item{rok_absolwentow}{Liczba całkowita reprezentująca rok absolwentów do filtrowania.}
 
 \item{rok}{Liczba całkowita reprezentująca rok do filtrowania.}
+
+\item{tylko_tabele}{parametr TRUE/FALSE przekazywany z głównej funkcji
+generującej raport - jeśli FALSE to przycina tabele z zawodami do 10
+najliczniejszych zawodów, jeśli TRUE to raport generuje tabele zawodów bez
+przycinania}
 }
 \value{
 Ramka danych typu tibble w finalnym formacie do zasilania wykresów.
