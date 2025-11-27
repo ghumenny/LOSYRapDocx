@@ -28,6 +28,7 @@ dane_wyk_K2dzi_plec <- function(pelna_finalna_ramka_wskaznikow,
     ) %>%
     pull(.data$wynik) %>% `[[`(1)
 
+
   if (is.null(dane_wejsciowe) ||
       colnames(dane_wejsciowe)[1] %in% "Uwaga") {
     message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
@@ -36,14 +37,29 @@ dane_wyk_K2dzi_plec <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
+  dane_wejsciowe <- dane_wejsciowe |> filter(liczba >= 10)
+  if (is.null(dane_wejsciowe) ) {
+    message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
+    return(tibble(
+      Uwaga = "Mniej niż 10 absolwentó ogółem."
+    ))
+  }
 
   dane_wyjsciowe <- dane_wejsciowe  %>%
-    select(sexf, starts_with("procent_")) %>%
-    pivot_longer(!sexf, names_to = "dziedzina", values_to = "pct",
-                 names_prefix = "procent_") %>%
+    select(-liczba, -procent) %>%
+    pivot_longer(
+      cols = matches("^(liczba|procent)_"),
+      names_to = c(".value", "dziedzina"),
+      names_pattern = "^(liczba|procent)_(.*)$"
+    ) |> group_by(dziedzina) %>%
+    # filter(
+    #   any(sexf == "OGÓŁEM" & liczba >= 10, na.rm = TRUE)
+    # ) %>%
+    ungroup() %>%
+    select(sexf, dziedzina, pct = procent) |>
     mutate(
-      pct = .data$pct / 100,
-      dziedzina = factor(.data$dziedzina, levels = c(
+      pct = pct / 100,
+      dziedzina = factor(dziedzina, levels = c(
         "nauk teologicznych",
         "nauk weterynaryjnych",
         "sztuki",
@@ -56,13 +72,19 @@ dane_wyk_K2dzi_plec <- function(pelna_finalna_ramka_wskaznikow,
       )),
       plec = if_else(sexf == "Mężczyzna", "Mężczyźni",
                      if_else(sexf == "Kobieta", "Kobiety", "Ogółem")),
-      plec = factor(.data$plec, levels = c(
+      plec = factor(plec, levels = c(
         "Ogółem",
         "Mężczyźni",
         "Kobiety"
       ))) %>%
     select(plec, dziedzina, pct)
 
+  if (nrow(dane_wyjsciowe)  == 0) {
+    message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
+    return(tibble(
+      Uwaga = "Brak zawodów o minimum 10 absolwentach"
+    ))
+  }
 
   return(dane_wyjsciowe)
 }
@@ -105,6 +127,13 @@ dane_tab_K2dzi_plec <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
+  dane_wejsciowe <- dane_wejsciowe |> filter(liczba >= 10)
+  if (is.null(dane_wejsciowe) ) {
+    message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
+    return(tibble(
+      Uwaga = "Mniej niż 10 absolwentó ogółem."
+    ))
+  }
 
   dane_wyjsciowe <- dane_wejsciowe  %>%
     mutate(sexf = if_else(sexf == "Mężczyzna", "Mężczyźni",
@@ -121,6 +150,12 @@ dane_tab_K2dzi_plec <- function(pelna_finalna_ramka_wskaznikow,
       Dziedzina = if_else(!is.na(Dziedzina), Dziedzina, "ogółem")) |>
     arrange(desc(Ogółem_liczba))
 
+  if (nrow(dane_wyjsciowe)  == 0) {
+    message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
+    return(tibble(
+      Uwaga = "Brak zawodów o minimum 10 absolwentach"
+    ))
+  }
 
   return(dane_wyjsciowe)
 }
@@ -172,7 +207,8 @@ dane_tab_K2dzi_zaw <- function(pelna_finalna_ramka_wskaznikow,
   if(tylko_tabele == FALSE) {
     dane_wyjsciowe <- dane_wejsciowe  %>%
       arrange(desc(liczba)) %>%
-      slice(2:11) %>%
+      slice(2:11)  %>%
+      filter(liczba > 10) %>%
       select(nazwa_zaw, liczba, starts_with("procent_"))%>%
       mutate(
         across(where(is.numeric), ~  round(.,digits = 2))) %>%
@@ -188,6 +224,14 @@ dane_tab_K2dzi_zaw <- function(pelna_finalna_ramka_wskaznikow,
       rename(Zawód = nazwa_zaw) %>%
       rename_with(~ str_replace(., "^procent_", "Procent w dziedzinie_"), matches("^procent_"))
   }
+
+  if (nrow(dane_wyjsciowe)  == 0) {
+    message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
+    return(tibble(
+      Uwaga = "Brak zawodów o minimum 10 absolwentach"
+    ))
+  }
+
   return(dane_wyjsciowe)
 }
 
@@ -229,6 +273,13 @@ dane_tab_K2dys_plec <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
+  dane_wejsciowe <- dane_wejsciowe |> filter(liczba >= 10)
+  if (is.null(dane_wejsciowe) ) {
+    message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
+    return(tibble(
+      Uwaga = "Mniej niż 10 absolwentó ogółem."
+    ))
+  }
 
   dane_wyjsciowe <- dane_wejsciowe  %>%
     mutate(sexf = if_else(sexf == "Mężczyzna", "Mężczyźni",
@@ -246,6 +297,12 @@ dane_tab_K2dys_plec <- function(pelna_finalna_ramka_wskaznikow,
     arrange(desc(Ogółem_liczba)) %>%
     slice(2:11)
 
+  if (nrow(dane_wyjsciowe)  == 0) {
+    message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
+    return(tibble(
+      Uwaga = "Brak zawodów o minimum 10 absolwentach"
+    ))
+  }
 
   return(dane_wyjsciowe)
 }
@@ -289,53 +346,118 @@ dane_tab_K2dys_zaw <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
-
-  dane_wyjsciowe <-   dane_wejsciowe %>% #
+  dane_wejsciowe_posortowane <- dane_wejsciowe %>%
     as_tibble() %>%
-    slice(2) %>%
-    rename(liczba_Ogółem = liczba,
-           procent_Ogółem = procent) %>%
-    tidyr::pivot_longer(liczba_Ogółem :ncol(dane_wejsciowe),
-                        names_to = "typ2",
-                        values_to = "value") %>%
-    tidyr::separate(typ2, c('forma', paste0(dane_wejsciowe[["nazwa_zaw"]][2],' (liczba absolwentów ',format(dane_wejsciowe[["liczba"]][2],big.mark = " "), ')_Dyscyplina')), sep = '_') %>%
-    tidyr::pivot_wider(names_from = c("nazwa_zaw", "forma"),
-                       values_from = c("value"),
-                       names_sep = "_",
-                       names_repair = "unique") %>%
-    arrange(desc(.[[2]])) %>%
-    slice(2:6) %>%
-    select(1,3)
-  colnames(dane_wyjsciowe)[2] <- paste0(dane_wejsciowe[["nazwa_zaw"]][2],' (liczba absolwentów ',format(dane_wejsciowe[["liczba"]][2],big.mark = " "), ')_procent')
+    arrange(desc(liczba))
 
-  for (n in 3:6) {
-    temp <- dane_wejsciowe %>%
-      as_tibble() %>%
+  if (nrow(dane_wejsciowe_posortowane) < 2) {
+    message("Brak danych o zawodach (jest tylko 'Ogółem' lub brak danych). Zwracam pustą ramkę.")
+    return(tibble(
+      Uwaga = "Brak danych o zawodach do przetworzenia."
+    ))
+  }
+  liczba_wierszy_spelniajacych_warunek <- sum(dane_wejsciowe_posortowane$liczba >= 10, na.rm = TRUE)
+
+  max_n <- min(nrow(dane_wejsciowe_posortowane),
+               liczba_wierszy_spelniajacych_warunek,
+               6)
+
+  if (max_n < 2) {
+    return(tibble(
+      Uwaga = "Brak zawodów o minimum 10 absolwentach"
+    ))
+  }
+
+  lista_wynikow <- list()
+
+  for (n in 2:max_n) {
+
+    nazwa_zawodu_n <- dane_wejsciowe_posortowane[["nazwa_zaw"]][n]
+    liczba_zawodu_n <- dane_wejsciowe_posortowane[["liczba"]][n]
+
+    separator_name <- paste0(nazwa_zawodu_n, ' (liczba absolwentów ', format(liczba_zawodu_n, big.mark = " "), ')_Dyscyplina')
+    final_col_name <- paste0(nazwa_zawodu_n, ' (liczba absolwentów ', format(liczba_zawodu_n, big.mark = " "), ')_procent')
+
+    temp <- dane_wejsciowe_posortowane %>%
       slice(n) %>%
       rename(liczba_Ogółem = liczba,
              procent_Ogółem = procent) %>%
-      tidyr::pivot_longer(liczba_Ogółem :ncol(dane_wejsciowe),
+      tidyr::pivot_longer(liczba_Ogółem : ncol(.), # `ncol(.)` odnosi się do 1-wierszowej ramki
                           names_to = "typ2",
                           values_to = "value") %>%
-      tidyr::separate(typ2, c('forma', paste0(dane_wejsciowe[["nazwa_zaw"]][n],' (liczba absolwentów ',format(dane_wejsciowe[["liczba"]][n],big.mark = " "), ')_Dyscyplina')), sep = '_') %>%
+      tidyr::separate(typ2, c('forma', separator_name), sep = '_') %>%
       tidyr::pivot_wider(names_from = c("nazwa_zaw", "forma"),
                          values_from = c("value"),
                          names_sep = "_",
                          names_repair = "unique") %>%
-      arrange(desc(.[[2]])) %>%
-      slice(2:6) %>%
-      select(1,3)
-    colnames(temp)[2] <- paste0(dane_wejsciowe[["nazwa_zaw"]][n],' (liczba absolwentów ',format(dane_wejsciowe[["liczba"]][n],big.mark = " "), ')_procent')
+      arrange(desc(.[[2]])) %>% # Sortuj wg liczby (kolumna 2)
+      slice(2:6) %>%           # Weź top 5 dyscyplin
+      select(1, 3)             # Wybierz dyscyplinę (kol 1) i procent (kol 3)
 
+    colnames(temp)[2] <- final_col_name
 
-
-    dane_wyjsciowe = cbind(
-      dane_wyjsciowe,
-      temp) %>%
-      mutate(
-        across(where(is.numeric), ~  round(.,digits = 2)))
+    lista_wynikow[[n - 1]] <- temp # Dodajemy ramkę do listy
   }
 
+  dane_wyjsciowe <- dplyr::bind_cols(lista_wynikow) %>%
+    mutate(
+      across(where(is.numeric), ~  round(., digits = 2))
+    )
+
+
+  if (nrow(dane_wyjsciowe)  == 0) {
+    message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
+    return(tibble(
+      Uwaga = "Brak zawodów o minimum 10 absolwentach"
+    ))
+  }
+
+  # dane_wyjsciowe <-   dane_wejsciowe %>% #
+  #   as_tibble() %>%
+  #   slice(2) %>%
+  #   rename(liczba_Ogółem = liczba,
+  #          procent_Ogółem = procent) %>%
+  #   tidyr::pivot_longer(liczba_Ogółem :ncol(dane_wejsciowe),
+  #                       names_to = "typ2",
+  #                       values_to = "value") %>%
+  #   tidyr::separate(typ2, c('forma', paste0(dane_wejsciowe[["nazwa_zaw"]][2],' (liczba absolwentów ',format(dane_wejsciowe[["liczba"]][2],big.mark = " "), ')_Dyscyplina')), sep = '_') %>%
+  #   tidyr::pivot_wider(names_from = c("nazwa_zaw", "forma"),
+  #                      values_from = c("value"),
+  #                      names_sep = "_",
+  #                      names_repair = "unique") %>%
+  #   arrange(desc(.[[2]])) %>%
+  #   slice(2:6) %>%
+  #   select(1,3)
+  # colnames(dane_wyjsciowe)[2] <- paste0(dane_wejsciowe[["nazwa_zaw"]][2],' (liczba absolwentów ',format(dane_wejsciowe[["liczba"]][2],big.mark = " "), ')_procent')
+  #
+  # for (n in 3:6) {
+  #   temp <- dane_wejsciowe %>%
+  #     as_tibble() %>%
+  #     slice(n) %>%
+  #     rename(liczba_Ogółem = liczba,
+  #            procent_Ogółem = procent) %>%
+  #     tidyr::pivot_longer(liczba_Ogółem :ncol(dane_wejsciowe),
+  #                         names_to = "typ2",
+  #                         values_to = "value") %>%
+  #     tidyr::separate(typ2, c('forma', paste0(dane_wejsciowe[["nazwa_zaw"]][n],' (liczba absolwentów ',format(dane_wejsciowe[["liczba"]][n],big.mark = " "), ')_Dyscyplina')), sep = '_') %>%
+  #     tidyr::pivot_wider(names_from = c("nazwa_zaw", "forma"),
+  #                        values_from = c("value"),
+  #                        names_sep = "_",
+  #                        names_repair = "unique") %>%
+  #     arrange(desc(.[[2]])) %>%
+  #     slice(2:6) %>%
+  #     select(1,3)
+  #   colnames(temp)[2] <- paste0(dane_wejsciowe[["nazwa_zaw"]][n],' (liczba absolwentów ',format(dane_wejsciowe[["liczba"]][n],big.mark = " "), ')_procent')
+  #
+  #
+  #
+  #   dane_wyjsciowe = cbind(
+  #     dane_wyjsciowe,
+  #     temp) %>%
+  #     mutate(
+  #       across(where(is.numeric), ~  round(.,digits = 2)))
+  # }
+  #
 
 
   return(dane_wyjsciowe)
@@ -379,6 +501,51 @@ dane_wyk_K2dys_plec <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
+  dane_wejsciowe <- dane_wejsciowe |> filter(liczba >= 10)
+  if (is.null(dane_wejsciowe) ) {
+    message("Brak danych wejściowych dla podanych kryteriów. Zwracam pustą ramkę danych.")
+    return(tibble(
+      Uwaga = "Mniej niż 10 absolwentó ogółem."
+    ))
+  }
+
+  poprawna_kolejnosc <- dane_wejsciowe %>%
+    filter(sexf == "OGÓŁEM") %>%
+    select(starts_with("liczba_")) %>%
+    pivot_longer(cols = starts_with("liczba_"),
+      names_to = c(".value", "dyscyplina"),
+      names_sep = "_") |>
+    arrange(liczba) %>%
+    pull(dyscyplina)
+
+  # dane_wyjsciowe <- dane_wejsciowe  %>%
+  #   select(-liczba, -procent) %>%
+  #   pivot_longer(
+  #     cols = matches("^(liczba|procent)_"),
+  #     names_to = c(".value", "dyscyplina"),
+  #     names_pattern = "^(liczba|procent)_(.*)$"
+  #   ) |> group_by(dyscyplina) %>%
+  #   # filter(
+  #   #   any(sexf == "OGÓŁEM" & liczba >= 10, na.rm = TRUE)
+  #   # ) %>%
+  #   ungroup() %>%
+  #   select(sexf, dyscyplina, pct = procent) |>
+  #   mutate(
+  #     dyscyplina = factor(dyscyplina, levels = poprawna_kolejnosc),
+  #     pct = pct / 100,
+  #     plec = if_else(sexf == "Mężczyzna", "Mężczyźni",
+  #                    if_else(sexf == "Kobieta", "Kobiety", "Ogółem")),
+  #     plec = factor(plec, levels = c(
+  #       "Ogółem",
+  #       "Mężczyźni",
+  #       "Kobiety"
+  #     ))) %>%
+  #   select(plec, dyscyplina, pct) |>
+  #   slice(1:30)
+
+
+
+
   dane_wyjsciowe <- dane_wejsciowe  %>%
     mutate(sexf = if_else(sexf == "Mężczyzna", "Mężczyźni",
                           if_else(sexf == "Kobieta", "Kobiety", "Ogółem"))) %>%
@@ -393,7 +560,7 @@ dane_wyk_K2dys_plec <- function(pelna_finalna_ramka_wskaznikow,
     select(dyscyplina, ends_with("_procent")) %>%
     slice(2:11)  %>%
     mutate(
-      dyscyplina = factor(dyscyplina, levels = unique(rev(dyscyplina)))
+      dyscyplina = factor(dyscyplina, levels = poprawna_kolejnosc)
     ) %>%
     pivot_longer(2:4,
                  names_to = c("plec"),

@@ -1,8 +1,10 @@
 ---
 output:
-  word_document2:
-    teoc: yes
+  rmarkdown::word_document:
+    toc: no
     toc_depth: 2
+    reference_docx: !expr system.file("szablony_raportu/LOSY3_szablon.docx", package = "LOSYRapDocx")
+    number_sections: false
 editor_options: 
   markdown: 
     wrap: sentence
@@ -177,6 +179,7 @@ W odniesieniu do absolwentów szkół, po których możliwe jest kontynuowanie n
 [^8]: Niektóre kierunki, np. indywidualne studia międzywydziałowe/międzydziedzinowe, mogą być przypisane jednocześnie do kilku dyscyplin. W takim przypadku na potrzeby raportowania wyników posługujemy się tą z dyscyplin, która została dla danego kierunku określona jako wiodąca.
 [^9]: Przypisanie konkretnego kierunku studiów do dyscypliny można sprawdzić w publicznie dostępnym serwisie:  https://radon.nauka.gov.pl/dane/studia-prowadzone-na-okreslonym-kierunku
 [^10]: Informacja o profilu oddziału w liceum ogólnokształcącym dla młodzieży i liceum dla dorosłych nie jest zapisywana w Systemie Informacji Oświatowej i nie może być przetwarzana w ramach monitoringu. Dlatego też nie prezentujemy informacji o dziedzinach i dyscyplinach studiów w podziale na profile oddziałów.
+
 **Przychody z pracy**
 
 Wskaźniki są obliczane na podstawie danych z ZUS i opierają się danych dotyczących podstawy wymiaru składek na ubezpieczenia społeczne oraz ubezpieczenie zdrowotne.

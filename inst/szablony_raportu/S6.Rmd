@@ -184,23 +184,23 @@ dane_tab_S7_zaw(pelna_finalna_ramka_wskaznikow,
 ```
 
 
-```{r '{{typ_szk}},s6t6'}
-cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na powiaty\n\n")
- 
-dane_tab_S7_pow(pelna_finalna_ramka_wskaznikow, 
-                typ_szk, ewaluowany_rok_abs, ewaluowany_rok) %>% 
-  gentab_tab_S7(ewaluowana_edycja) 
-```
+<!-- ```{r '{{typ_szk}},s6t6'} -->
+<!-- cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na powiaty\n\n") -->
+
+<!-- dane_tab_S7_pow(pelna_finalna_ramka_wskaznikow,  -->
+<!--                 typ_szk, ewaluowany_rok_abs, ewaluowany_rok) %>%  -->
+<!--   gentab_tab_S7(ewaluowana_edycja)  -->
+<!-- ``` -->
 
 
-```{r '{{typ_szk}},s6t7'}
-if (ewaluowana_edycja == (ewaluowany_rok_abs + 2)) {
-  cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na powiaty\n\n")
- 
-dane_tab_S7_pow(pelna_finalna_ramka_wskaznikow, 
-                typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok) %>% 
-  gentab_tab_S7(ewaluowana_edycja) 
-}
-```
+<!-- ```{r '{{typ_szk}},s6t7'} -->
+<!-- if (ewaluowana_edycja == (ewaluowany_rok_abs + 2)) { -->
+<!--   cat0("Tabela ", tab_num(), ": Status edukacyjno-zawodowy w grudniu ", ewaluowany_kolejny_rok, " r. - absolwenci ", dopelniacz(typ_szk), " z ", ewaluowany_rok_abs, " r. - w podziale na powiaty\n\n") -->
+
+<!-- dane_tab_S7_pow(pelna_finalna_ramka_wskaznikow,  -->
+<!--                 typ_szk, ewaluowany_rok_abs, ewaluowany_kolejny_rok) %>%  -->
+<!--   gentab_tab_S7(ewaluowana_edycja)  -->
+<!-- } -->
+<!-- ``` -->
 
 

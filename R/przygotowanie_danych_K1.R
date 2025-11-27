@@ -38,11 +38,19 @@ dane_wyk_K1_plec <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
+  n_m <- sum(dane_wejsciowe$n_Mężczyzna, na.rm = TRUE)
+  n_k <- sum(dane_wejsciowe$n_Kobieta, na.rm = TRUE)
+  n_o <- sum(dane_wejsciowe$n_OGÓŁEM, na.rm = TRUE)
 
   dane_wyjsciowe <- dane_wejsciowe  %>%
     select(`Kontynuacja nauki`, starts_with("pct_")) %>%
     pivot_longer(!`Kontynuacja nauki`, names_to = "plec", values_to = "pct",
                  names_prefix = "pct_") %>%
+    filter(
+      (plec == "Mężczyzna" & n_m >= 10) |
+        (plec == "Kobieta" & n_k >= 10) |
+        (plec == "OGÓŁEM" & n_o >= 10)
+    ) %>%
     mutate(
       pct = .data$pct / 100,
       kontynuacja = str_c(str_to_upper(str_sub(`Kontynuacja nauki`, 1, 1)),
@@ -107,7 +115,14 @@ dane_tab_K1_plec <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
+  n_m <- sum(dane_wejsciowe$n_Mężczyzna, na.rm = TRUE)
+  n_k <- sum(dane_wejsciowe$n_Kobieta, na.rm = TRUE)
+  n_o <- sum(dane_wejsciowe$n_OGÓŁEM, na.rm = TRUE)
+
   dane_wyjsciowe <- dane_wejsciowe  %>%
+    { if (n_m < 10) select(., -ends_with("Mężczyzna")) else . } %>%
+    { if (n_k < 10) select(., -ends_with("Kobieta")) else . } %>%
+    { if (n_o < 10) select(., -ends_with("OGÓŁEM")) else . } %>%
     mutate(
       across(where(is.numeric), ~  round(.,digits = 2)),
       `Kontynuacja nauki` = str_c(str_to_upper(str_sub(`Kontynuacja nauki`, 1, 1)),

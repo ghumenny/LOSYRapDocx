@@ -164,12 +164,20 @@ dane_wyk_B1_plec <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
+  wiersz_sumy <- dane_wejsciowe %>%
+    filter(B1 == "SUMA")
+  n_m <- if(nrow(wiersz_sumy) > 0) wiersz_sumy$n_Mężczyzna else 0
+  n_k <- if(nrow(wiersz_sumy) > 0) wiersz_sumy$n_Kobieta else 0
 
   dane_wyjsciowe <- dane_wejsciowe  %>%
     filter(B1 != "SUMA") %>%
     select(B1, starts_with("pct_"), -pct_OGÓŁEM) %>%
     pivot_longer(!B1, names_to = "plec", values_to = "pct",
                  names_prefix = "pct_") %>%
+    filter(
+      (plec == "Mężczyzna" & n_m >= 10) |
+        (plec == "Kobieta" & n_k >= 10)
+    ) %>%
     mutate(
       pct = .data$pct / 100,
       bezrobocie = factor(B1, levels = c(
@@ -220,10 +228,15 @@ dane_tab_B1_plec <- function(pelna_finalna_ramka_wskaznikow,
     ))
   }
 
+  wiersz_sumy <- dane_wejsciowe %>% filter(B1 == "SUMA")
+  n_m <- if(nrow(wiersz_sumy) > 0) wiersz_sumy$n_Mężczyzna else 0
+  n_k <- if(nrow(wiersz_sumy) > 0) wiersz_sumy$n_Kobieta else 0
 
   dane_wyjsciowe <- dane_wejsciowe  %>%
     filter(B1 != "SUMA") %>%
     select(-ends_with("OGÓŁEM")) %>%
+    { if (n_m < 10) select(., -ends_with("Mężczyzna")) else . } %>%
+    { if (n_k < 10) select(., -ends_with("Kobieta")) else . } %>%
     mutate(
       across(where(is.numeric), ~  round(.,digits = 2))) %>%
     rename(Bezrobocie = B1) %>%

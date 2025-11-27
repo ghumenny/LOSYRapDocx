@@ -69,6 +69,7 @@ dane_tab_W1 <- function(pelna_finalna_ramka_wskaznikow,
         dplyr::rename(Zawód = nazwa_zaw)
     }
   }
-
+  dane_wyjsciowe <- dane_wyjsciowe %>%
+    dplyr::relocate(any_of(c("Płeć", "Zawód")))
   return(dane_wyjsciowe)
 }
